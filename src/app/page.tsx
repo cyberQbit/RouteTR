@@ -139,7 +139,7 @@ export default function Home() {
       <footer className="mt-auto border-t border-[#1e293b] bg-[#090d16] pb-[env(safe-area-inset-bottom)]">
         <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-2 px-3 py-4 md:flex-row md:px-6">
           <div className="text-xs text-gray-500">
-            <strong className="text-gray-300">Route TR</strong> • Türkiye Seyahat & Keşif Haritası • v3.2
+            <strong className="text-gray-300">Route TR</strong> • Türkiye Seyahat & Keşif Haritası • v3.3
           </div>
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs">
             <a
@@ -162,7 +162,7 @@ export default function Home() {
               href="RouteTR.zip"
               download="RouteTR.zip"
               className="inline-flex items-center gap-1 font-semibold text-[#fdba74] transition hover:text-[#f97316]"
-              title="Bu sitenin tüm kaynak kodlarını indir (Next.js v3.1)"
+              title="Bu sitenin tüm kaynak kodlarını indir (Next.js v3.3)"
             >
               <Package className="h-3.5 w-3.5" /> Kaynak Kod (.zip)
             </a>

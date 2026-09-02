@@ -1,4 +1,5 @@
 {
+  "id": "./",
   "name": "RouteTR — Türkiye Seyahat & Keşif Haritası",
   "short_name": "RouteTR",
   "description": "81 il, 973 ilçe ve 600+ POI ile granüler rota, ilçe kaydı ve POI keşif günlüğü. Rozetler, hedefler, hava durumu ve sosyal paylaşım.",
@@ -8,18 +9,37 @@
   "theme_color": "#0b0f19",
   "orientation": "any",
   "lang": "tr",
+  "categories": ["travel", "navigation", "lifestyle"],
   "icons": [
     {
       "src": "icon.svg",
-      "sizes": "192x192",
+      "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "icon.svg",
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "scope": "./"

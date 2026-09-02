@@ -1,3 +1,8 @@
+# RouteTR — https://cyberqbit.github.io/RouteTR/
+User-agent: *
+Allow: /
+
+# Sosyal medya önizleme botlarına da açık
 User-agent: Googlebot
 Allow: /
 
@@ -10,5 +15,10 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
+User-agent: LinkedInBot
 Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+Sitemap: https://cyberqbit.github.io/RouteTR/sitemap.xml

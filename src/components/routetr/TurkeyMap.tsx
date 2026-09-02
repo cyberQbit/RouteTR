@@ -11,6 +11,7 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { PROVINCES_DATA } from "@/data/routetr/provinces";
 import { useRouteTR } from "@/lib/routetr/store";
+import { loadMapSvgText } from "@/lib/routetr/map-svg";
 import { calculateProvinceScore, getHeatmapColor, checkProvinceMatch } from "@/lib/routetr/logic";
 import type { TravelState } from "@/lib/routetr/types";
 import { Plus, Minus, Home, RefreshCw } from "lucide-react";
@@ -26,32 +27,6 @@ interface FilterOptions {
 interface TurkeyMapProps {
   filter: FilterOptions;
   onProvinceClick: (plate: string) => void;
-}
-
-// ---------- SVG metni için modül seviyesi önbellek (remount'ta tekrar fetch edilmez) ----------
-// NEXT_PUBLIC_BASE_PATH: GitHub Pages alt klasörü (/RouteTR) yayınları için build'de verilir
-const ASSET_BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
-let svgTextCache: string | null = null;
-let svgTextPromise: Promise<string> | null = null;
-
-function loadSvgText(): Promise<string> {
-  if (svgTextCache) return Promise.resolve(svgTextCache);
-  if (!svgTextPromise) {
-    svgTextPromise = fetch(`${ASSET_BASE}/turkey-map.svg`)
-      .then((r) => {
-        if (!r.ok) throw new Error(`Harita yüklenemedi (${r.status})`);
-        return r.text();
-      })
-      .then((t) => {
-        svgTextCache = t;
-        return t;
-      })
-      .catch((err) => {
-        svgTextPromise = null; // yeniden denemeye izin ver
-        throw err;
-      });
-  }
-  return svgTextPromise;
 }
 
 // ---------- Ana Harita ----------
@@ -75,7 +50,7 @@ export default function TurkeyMap({ filter, onProvinceClick }: TurkeyMapProps) {
   // ---------- Harita geometrisini yükle ve katmanlara işle ----------
   useEffect(() => {
     let cancelled = false;
-    loadSvgText()
+    loadMapSvgText()
       .then((text) => {
         if (cancelled) return;
         // image/svg+xml ile parse: script çalıştırılmaz, kendi statik dosyamız

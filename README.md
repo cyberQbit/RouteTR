@@ -14,12 +14,13 @@ Türkiye'nin **81 ili** ve **973 ilçesi** için granüler seyahat günlüğü. 
 - 📊 **7 bölge seyahat endeksi** — bölgesel ilerleme + puanlama metodolojisi.
 - 🌤️ **Canlı hava durumu** — Open-Meteo (anahtar gerektirmez), il modalinde çip.
 - 🍽️ **Mutfak güzergâhları** — her ile 3 yöresel yemek önerisi.
-- 📮 **Kartpostal üretici** — skor + rozetli PNG indirir (canvas).
+- 📮 **Sosyal medya seyahat kartı** — 4 Instagram optimize format: Hikâye/Reels (9:16), Instagram Akış (4:5 — önerilen), Portre 3:4 ve Yatay (16:9). Minimal + markalı tasarım, gerçek haritalı, panoya kopyalanabilir.
 - 🧪 **Akıllı öneriler** — en yakın "keşfedilmemiş" iller.
 - 🔍 **Türkçe duyarlı arama** — "eskişehir", "Eskişehir", "26" hepsi eşleşir.
 - 🎓 **Hoş geldin turu** — 6 adımlı spotlight turu.
-- 📱 **Mobil uyumlu + PWA** — manifest, tam ekran, dokunmatik jestler.
+- 📱 **Mobil uyumlu + PWA** — manifest (PNG + SVG ikonlar), tam ekran, dokunmatik jestler.
 - 💾 **Yedekle / Yükle** — tüm ilerlemen JSON olarak dışa/içe aktarılır (eski RouteTR yedekleriyle uyumlu).
+- 🔎 **SEO & bulunabilirlik** — canonical + Open Graph/Twitter kartı (özel `og-image.png`), JSON-LD (WebApplication), `sitemap.xml`, `robots.txt`, PWA manifest metadata.
 
 ## 🚀 Yerelde Çalıştırma
 
@@ -42,6 +43,8 @@ Tarayıcıda `http://localhost:3000` adresini aç.
    - `out/` klasörünü Pages'e yayınlar.
 
 > Repo adınız farklıysa basePath otomatik olarak repo adına ayarlanır; bir şey yapmanıza gerek yok.
+
+**SEO ipucu:** Repolarınızın **About** kısmına site URL'sini (`https://<kullanıcı>.github.io/<repo>/`) ve **Social preview** görseli olarak `public/og-image.png`'yi ekleyin — hem arama motorları hem sosyal paylaşımlar için bulunabilirliği artırır.
 
 **Manuel alternatif:**
 
@@ -77,6 +80,9 @@ src/
     logic.ts  types.ts  weather.ts
 public/
   turkey-map.svg              # Gerçek Türkiye SVG haritası (aakutlu/tr-svg-maps)
+  og-image.png                # Sosyal medya paylaşım görseli (1200×630)
+  sitemap.xml  robots.txt     # Arama motoru bulunabilirliği
+  icon.svg  icon-*.png        # PWA/SEO ikonları
 scripts/
   build-pages.mjs             # GitHub Pages statik export build'i
 .github/workflows/deploy.yml  # Otomatik Pages yayını

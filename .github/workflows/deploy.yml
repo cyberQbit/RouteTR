@@ -35,6 +35,7 @@ jobs:
         run: node scripts/build-pages.mjs
         env:
           NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
+          NEXT_PUBLIC_SITE_URL: https://cyberqbit.github.io
 
       - name: Pages kurulumu
         uses: actions/configure-pages@v5
