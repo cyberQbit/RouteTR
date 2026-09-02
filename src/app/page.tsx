@@ -21,7 +21,7 @@ import PostcardModal from "@/components/routetr/PostcardModal";
 import WelcomeTour from "@/components/routetr/WelcomeTour";
 import { useRouteTR } from "@/lib/routetr/store";
 import { computeGlobalStats, getTravelerTitle, type FilterOptions } from "@/lib/routetr/logic";
-import { Github, ExternalLink } from "lucide-react";
+import { Github, ExternalLink, Package } from "lucide-react";
 
 const LEGEND_ITEMS = [
   { color: "#182032", label: "Gitmedim (%0)" },
@@ -157,6 +157,14 @@ export default function Home() {
               className="inline-flex items-center gap-1 text-gray-400 transition hover:text-[#f97316]"
             >
               <ExternalLink className="h-3.5 w-3.5" /> GitHub Repository
+            </a>
+            <a
+              href="RouteTR.zip"
+              download="RouteTR.zip"
+              className="inline-flex items-center gap-1 font-semibold text-[#fdba74] transition hover:text-[#f97316]"
+              title="Bu sitenin tüm kaynak kodlarını indir (Next.js v3.1)"
+            >
+              <Package className="h-3.5 w-3.5" /> Kaynak Kod (.zip)
             </a>
             <span className="text-gray-600">GNU GPL v3.0</span>
           </div>

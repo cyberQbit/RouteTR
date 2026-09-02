@@ -32,7 +32,7 @@ export default function ExplorerGrid({
       <div className="mb-3 flex flex-wrap items-baseline justify-between gap-1">
         <h2 className="text-lg font-bold text-white">📋 Şehirler Listesi & Hızlı Düzenleme</h2>
         <span className="text-xs text-gray-500">
-          {filtered.length} il gösteriliyor • Kartlara tıklayarak seyahat notu ve ilçe ekle
+          {filtered.length} / 81 il • Liste kendi içinde kaydırılır • Karta tıklayarak seyahat notu ve ilçe ekle
         </span>
       </div>
 
@@ -41,42 +41,48 @@ export default function ExplorerGrid({
           Aramanızla eşleşen şehir veya ilçe bulunamadı. 🔍
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
-          {filtered.map((p) => {
-            const pData = travelState[p.plate];
-            const score = calculateProvinceScore(travelState, p.plate);
-            const status = pData?.status || "unvisited";
+        <div
+          className="routetr-scrollbar max-h-[540px] overflow-y-auto overscroll-contain rounded-xl border border-[#232f45] bg-[#10182b]/50 p-2.5 sm:p-3"
+          role="region"
+          aria-label="Şehir kartları kaydırılabilir liste"
+        >
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
+            {filtered.map((p) => {
+              const pData = travelState[p.plate];
+              const score = calculateProvinceScore(travelState, p.plate);
+              const status = pData?.status || "unvisited";
 
-            return (
-              <button
-                key={p.plate}
-                type="button"
-                onClick={() => onProvinceClick(p.plate)}
-                className="group flex items-center justify-between gap-3 rounded-xl border border-[#232f45] bg-[#141b2e] p-3.5 text-left transition-all hover:-translate-y-0.5 hover:border-[#f97316]/60 hover:bg-[#1a2338] hover:shadow-lg"
-                aria-label={`${p.name} detaylarını aç`}
-              >
-                <div className="flex min-w-0 items-center gap-3">
-                  <span
-                    className={`flex h-9 w-11 shrink-0 items-center justify-center rounded-md border text-sm font-extrabold transition ${
-                      status !== "unvisited"
-                        ? "border-[#f97316]/50 bg-[#f97316]/10 text-[#fdba74]"
-                        : "border-[#2e3a52] bg-[#0e1422] text-gray-500"
-                    }`}
-                  >
-                    {p.plate}
-                  </span>
-                  <div className="min-w-0">
-                    <div className="truncate text-sm font-bold text-gray-100 group-hover:text-white">{p.name}</div>
-                    <div className="truncate text-[11px] text-gray-500">
-                      {p.region} • {(pData?.visitedDistricts || []).length}/{p.districts.length} ilçe
-                      {(pData?.visitedPois || []).length > 0 && ` • ${(pData?.visitedPois || []).length} POI`}
+              return (
+                <button
+                  key={p.plate}
+                  type="button"
+                  onClick={() => onProvinceClick(p.plate)}
+                  className="group flex items-center justify-between gap-3 rounded-xl border border-[#232f45] bg-[#141b2e] p-3.5 text-left transition-all hover:border-[#f97316]/60 hover:bg-[#1a2338] hover:shadow-lg"
+                  aria-label={`${p.name} detaylarını aç`}
+                >
+                  <div className="flex min-w-0 items-center gap-3">
+                    <span
+                      className={`flex h-9 w-11 shrink-0 items-center justify-center rounded-md border text-sm font-extrabold transition ${
+                        status !== "unvisited"
+                          ? "border-[#f97316]/50 bg-[#f97316]/10 text-[#fdba74]"
+                          : "border-[#2e3a52] bg-[#0e1422] text-gray-500"
+                      }`}
+                    >
+                      {p.plate}
+                    </span>
+                    <div className="min-w-0">
+                      <div className="truncate text-sm font-bold text-gray-100 group-hover:text-white">{p.name}</div>
+                      <div className="truncate text-[11px] text-gray-500">
+                        {p.region} • {(pData?.visitedDistricts || []).length}/{p.districts.length} ilçe
+                        {(pData?.visitedPois || []).length > 0 && ` • ${(pData?.visitedPois || []).length} POI`}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <StatusPill score={score} status={status} />
-              </button>
-            );
-          })}
+                  <StatusPill score={score} status={status} />
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
     </section>

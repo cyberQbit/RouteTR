@@ -3,7 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 // ==========================================================================
 // ROUTE TR — Hava Durumu API (Open-Meteo proxy, API key gerektirmez)
 // Lokal bellek cache'i ile tekrarlı istekler engellenir (10 dk TTL)
+// WMO kod tablosu src/lib/routetr/weather.ts ile paylaşılır.
 // ==========================================================================
+
+import { WMO_CODES } from "@/lib/routetr/weather";
 
 interface CacheEntry {
   data: unknown;
@@ -12,37 +15,6 @@ interface CacheEntry {
 
 const CACHE_TTL_MS = 10 * 60 * 1000; // 10 dakika
 const weatherCache = new Map<string, CacheEntry>();
-
-const WMO_CODES: Record<number, { desc: string; icon: string }> = {
-  0: { desc: "Açık", icon: "☀️" },
-  1: { desc: "Az Bulutlu", icon: "🌤️" },
-  2: { desc: "Parçalı Bulutlu", icon: "⛅" },
-  3: { desc: "Kapalı", icon: "☁️" },
-  45: { desc: "Puslu", icon: "🌫️" },
-  48: { desc: "Kırağılı Pus", icon: "🌫️" },
-  51: { desc: "Hafif Çisenti", icon: "🌦️" },
-  53: { desc: "Çisenti", icon: "🌦️" },
-  55: { desc: "Yoğun Çisenti", icon: "🌧️" },
-  56: { desc: "Dondurucu Çisenti", icon: "🌨️" },
-  57: { desc: "Yoğun Dondurucu Çisenti", icon: "🌨️" },
-  61: { desc: "Hafif Yağmur", icon: "🌦️" },
-  63: { desc: "Yağmurlu", icon: "🌧️" },
-  65: { desc: "Şiddetli Yağmur", icon: "🌧️" },
-  66: { desc: "Dondurucu Yağmur", icon: "🌨️" },
-  67: { desc: "Şiddetli Dondurucu Yağmur", icon: "🌨️" },
-  71: { desc: "Hafif Kar", icon: "🌨️" },
-  73: { desc: "Kar Yağışlı", icon: "❄️" },
-  75: { desc: "Yoğun Kar", icon: "❄️" },
-  77: { desc: "Kar Taneleri", icon: "🌨️" },
-  80: { desc: "Hafif Sağanak", icon: "🌦️" },
-  81: { desc: "Sağanak", icon: "🌧️" },
-  82: { desc: "Şiddetli Sağanak", icon: "⛈️" },
-  85: { desc: "Kar Saınağı", icon: "🌨️" },
-  86: { desc: "Yoğun Kar Saınağı", icon: "❄️" },
-  95: { desc: "Gök Gürültülü", icon: "⛈️" },
-  96: { desc: "Dolulu Fırtına", icon: "⛈️" },
-  99: { desc: "Şiddetli Dolu Fırtınası", icon: "⛈️" },
-};
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);

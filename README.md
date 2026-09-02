@@ -1,49 +1,91 @@
-# 🛣️ Route TR — Türkiye Granüler Seyahat & Keşif Haritası
+# 🗺️ Route TR — Türkiye Seyahat & Keşif Haritası
 
-**Route TR**, seyahatlerinizi sadece *"Gittim / Gitmedim"* ikiliğine sıkıştırmayan; **İl**, **İlçe** ve **Önemli Noktalar (POI)** düzeyinde derinlemesine kayıt altına alan modern bir seyahat günlüğü, rozet sistemi ve interaktif ısı haritası (heatmap) web uygulamasıdır.
+Türkiye'nin **81 ili** ve **973 ilçesi** için granüler seyahat günlüğü. Gerçek coğrafyalı interaktif SVG harita üzerinde gezdiğin ilçeleri işaretle, keşif skorunu yükselt, 22 rozet aç, hedefler koy ve kartpostalını üret. Tüm veriler **yalnızca tarayıcında** (localStorage) saklanır — hesap gerekmez.
 
-Geliştirici: [Aydın Aydemir (@cyberQbit)](https://github.com/cyberQbit)  
-Proje Deposu: [RouteTR](https://github.com/cyberQbit/RouteTR)  
-Canlı Sayfa: [cyberqbit.github.io/RouteTR](https://cyberqbit.github.io/RouteTR/)
+**Canlı demo:** https://cyberqbit.github.io/RouteTR/
 
----
+## ✨ Özellikler
 
-## 🌟 Öne Çıkan Özellikler (Yol Haritası Kapsamı)
+- 🗺️ **Gerçek Türkiye haritası** — 973 ilçe geometrisi (kaynak: [aakutlu/tr-svg-maps](https://github.com/aakutlu/tr-svg-maps), MIT). Sürükle-pan, tekerlek/pinch zoom, %100 göstergesi, heatmap boyama.
+- 📋 **Kaydırılabilir şehir listesi** — 81 il kendi içinde kaydırılan kompakt bir panelde; karta tıkla, not ekle.
+- 🧭 **İl/İlçe/POI tabanlı keşif puanı** — durum (Transit / Gezdim / Yaşadım), ilçe ve POI işaretleri.
+- 🏅 **22 rozet** — bölge tamamlama, kilometre taşları, Türkiye Fatihi'ne kadar.
+- 🎯 **Seyahat hedefleri** — 8 hazır şablon + özel hedefler, canlı ilerleme.
+- 📊 **7 bölge seyahat endeksi** — bölgesel ilerleme + puanlama metodolojisi.
+- 🌤️ **Canlı hava durumu** — Open-Meteo (anahtar gerektirmez), il modalinde çip.
+- 🍽️ **Mutfak güzergâhları** — her ile 3 yöresel yemek önerisi.
+- 📮 **Kartpostal üretici** — skor + rozetli PNG indirir (canvas).
+- 🧪 **Akıllı öneriler** — en yakın "keşfedilmemiş" iller.
+- 🔍 **Türkçe duyarlı arama** — "eskişehir", "Eskişehir", "26" hepsi eşleşir.
+- 🎓 **Hoş geldin turu** — 6 adımlı spotlight turu.
+- 📱 **Mobil uyumlu + PWA** — manifest, tam ekran, dokunmatik jestler.
+- 💾 **Yedekle / Yükle** — tüm ilerlemen JSON olarak dışa/içe aktarılır (eski RouteTR yedekleriyle uyumlu).
 
-1. **81 İl & Gerçek İlçe Sınırları**:
-   - Türkiye'nin dış sınırları ve il sınırları kalın çizgilerle, ilçe sınırları ise zarif ince çizgilerle harita üzerinde işlenmiştir.
-   - [tr-svg-maps](https://github.com/aakutlu/tr-svg-maps) dosyaları (`TR-adm2-with-city-borders.svg` / `TR-adm1.svg`) eklendiğinde otomatik algılanıp yüklenir.
-2. **🏆 Rozet ve Başarı (Achievements) Sistemi**:
-   - 22 farklı başarı rozeti (İlk Adım, 7 Bölge Fatihi, Marmara Ustası, Ege Ruhu, Karadeniz Sevdalısı, Sınır Boyu Avcısı, Büyük Üçlü, İlçe Kaşifi vb.).
-   - Canlı ilerleme çubuğu ve kazanılan rozetlerin takibi.
-3. **🎯 Seyahat Hedefleri (Bucket List)**:
-   - Kişisel seyahat hedefleri oluşturma (Örn: "Bu yıl 5 yeni il gez", "Ege bölgesini bitir", "50 ilçe sınırını aş").
-   - Gerçek zamanlı ilerleme yüzdesi hesabı.
-4. **💡 "Yakınında Gitmediğin Şehirler" Akıllı Öneri Motoru**:
-   - Ziyaret ettiğiniz illerin sınır komşularını analiz ederek sıradaki en mantıklı rota durağını önerir.
-   - Bölgeyi tamamlamaya en yakın olduğunuz illeri otomatik tespit eder.
-5. **📊 Skor & Bölgesel Analiz (Analytics)**:
-   - 7 Coğrafi bölgenin tamamlanma yüzdeleri, il/ilçe oranları ve puanlama metodolojisi şeffaf dökümü.
-6. **İlçe Bazlı İşaretleme & POI Checklisti**:
-   - Türkiye'nin tüm ilçeleri ve her ilin öne çıkan 5-10 tarihi/doğal durağı (Örn: Sazova Parkı, Odunpazarı Evleri, Mihalıççık Yunus Emre Türbesi, Han Yazılıkaya vb.).
-   - Kullanıcıların kendi gittikleri özel köy, yayla veya lezzet durağını ekleyebilme desteği.
-7. **📸 Sosyal Medya Seyahat Kartı (Canvas PNG Export)**:
-   - "Seyahat Kartı Al" butonu ile haritanızı, genel keşif yüzdenizi, kazanılan rozet sayısını ve unvanınızı yüksek çözünürlüklü bir kartpostal olarak tek tıkla indirme.
-8. **Veri Yönetimi & Yerel Kayıt**:
-   - `localStorage` ile otomatik anlık kayıt.
-   - Seyahat verilerini ve hedefleri `.json` formatında yedekleme (export) ve başka cihazlara geri yükleme (import).
-9. **Mobil ve Tüm Ekranlara Tam Uyumlu (Responsive)**:
-   - Akıllı telefonlar, tabletler ve masaüstü bilgisayarlarda kusursuz çalışan esnek arayüz.
+## 🚀 Yerelde Çalıştırma
 
----
+Node.js 20+ veya Bun kurulu olmalı.
 
-## 🚀 GitHub Pages Üzerinde Yayınlama
+```bash
+npm install        # veya: bun install
+npm run dev        # veya: bun run dev
+```
 
-1. Dosyaları deponuzun ana dizinine (`root`) ekleyin (`index.html`, `styles.css`, `data.js`, `app.js`, `README.md`, `LICENSE`).
-2. Deponuzun **Settings** > **Pages** sekmesine gidin.
-3. **Branch** kısmından `main` (veya `master`) dalını ve `/ (root)` seçip **Save** butonuna tıklayın.
+Tarayıcıda `http://localhost:3000` adresini aç.
 
----
+## 📦 GitHub Pages'te Yayınlama (önerilen yol)
 
-## 📄 Lisans
-Bu proje [GNU General Public License v3.0 (GPL-3.0)](LICENSE) altında lisanslanmıştır.
+1. Bu klasörün tamamını kendi reponuza push edin (örn. `cyberQbit/RouteTR`).
+2. Repoda **Settings → Pages → Source** seçeneğini **"GitHub Actions"** yapın (tek seferlik).
+3. `.github/workflows/deploy.yml` her push'ta otomatik:
+   - bağımlılıkları kurar,
+   - `NEXT_PUBLIC_BASE_PATH=/RouteTR` ile statik export üretir (`npm run build:pages`),
+   - `out/` klasörünü Pages'e yayınlar.
+
+> Repo adınız farklıysa basePath otomatik olarak repo adına ayarlanır; bir şey yapmanıza gerek yok.
+
+**Manuel alternatif:**
+
+```bash
+npm run build:pages   # → out/ klasörü
+# out/ içeriğini gh-pages dalına push edin
+npx gh-pages -d out   # veya .nojekyll ekleyip el ile
+```
+
+## ☁️ Vercel'de Yayınlama
+
+Reponuzu Vercel'e import etmeniz yeterli — ek ayar gerekmez. `/api/weather` proxy'si Vercel'de otomatik çalışır (hava durumu sunucu taraflı cache'lenir).
+
+## 🧱 Proje Yapısı
+
+```
+src/
+  app/
+    page.tsx                  # Tek sayfa uygulama (tüm modüller)
+    layout.tsx                # SEO metadata, font, PWA manifest
+    api/weather/route.ts      # Open-Meteo proxy (statik yayında devre dışı)
+  components/routetr/
+    TurkeyMap.tsx             # İnteraktif harita (pan/zoom/heatmap)
+    Header.tsx  DashboardBar.tsx  BadgesGrid.tsx
+    SuggestionsGrid.tsx  RegionAnalytics.tsx  GoalsSection.tsx
+    SearchControls.tsx  ExplorerGrid.tsx  ProvinceModal.tsx
+    PostcardModal.tsx  WelcomeTour.tsx
+  data/routetr/
+    provinces.ts              # 81 il / 973 ilçe / 634 POI verisi
+    geo.ts                    # koordinatlar, bölge, mutfak verisi
+  lib/routetr/
+    store.ts                  # Zustand + localStorage persist
+    logic.ts  types.ts  weather.ts
+public/
+  turkey-map.svg              # Gerçek Türkiye SVG haritası (aakutlu/tr-svg-maps)
+scripts/
+  build-pages.mjs             # GitHub Pages statik export build'i
+.github/workflows/deploy.yml  # Otomatik Pages yayını
+```
+
+## 🔧 Teknolojiler
+
+Next.js 16 (App Router) • TypeScript • Tailwind CSS 4 • shadcn/ui • Zustand • Lucide Icons
+
+## 📜 Lisans
+
+GNU GPL v3.0. Harita geometrisi: [aakutlu/tr-svg-maps](https://github.com/aakutlu/tr-svg-maps) (MIT).

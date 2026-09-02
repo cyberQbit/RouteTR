@@ -134,17 +134,15 @@ body {
   max-width: 100vw;
 }
 
-/* Harita ilçe path'leri: hover vurgusu */
-.rtr-district-path {
-  stroke: transparent;
-  stroke-width: 0.4;
+/* Harita ilçe grupları (public/turkey-map.svg'den enjekte edilen DOM): hover vurgusu */
+#turkey-svg-map g[data-d] path {
   cursor: pointer;
-  transition: opacity 0.15s ease;
+  transition: filter 0.15s ease;
 }
-.rtr-district-path:hover {
-  stroke: #f8fafc;
-  stroke-width: 0.7;
-  filter: brightness(1.25);
+#turkey-svg-map g[data-d]:hover path {
+  filter: brightness(1.35);
+  stroke: #e2e8f0;
+  stroke-width: 0.8;
 }
 
 /* İnce, marka uyumlu scrollbar */

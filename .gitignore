@@ -52,19 +52,3 @@ prompt
 server.log
 # Skills directory
 /skills/
-
-# Database files
-*.db
-
-# Temporary tool results
-/tool-results/
-
-# User uploads
-/upload/
-
-# Development process files
-worklog.md
-dev.pid
-
-# Lock files (use package.json instead)
-bun.lock

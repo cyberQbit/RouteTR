@@ -1,19 +1,21 @@
 "use client";
 
 // ==========================================================================
-// ROUTE TR — İnteraktif Türkiye Haritası
-// 4 katman: ilçe dolguları, il sınırları, ülke sınırı, etiketler
+// ROUTE TR — İnteraktif Türkiye Haritası (gerçek coğrafya)
+// Geo veri: public/turkey-map.svg — 973 ilçe yolu + 81 il sınırı
+// Kaynak geometri: github.com/aakutlu/tr-svg-maps (MIT)
+// Yaklaşım: SVG runtime'da fetch edilir, ilçeler imperatif olarak boyanır
 // Pan (sürükle) + Zoom (tekerlek, pinch, butonlar) + Tooltip + Heatmap
 // ==========================================================================
 
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
-import { PROVINCES_DATA, COUNTRY_BORDER_SVG_D } from "@/data/routetr/provinces";
+import { PROVINCES_DATA } from "@/data/routetr/provinces";
 import { useRouteTR } from "@/lib/routetr/store";
 import { calculateProvinceScore, getHeatmapColor, checkProvinceMatch } from "@/lib/routetr/logic";
-import type { Province, TravelState } from "@/lib/routetr/types";
-import { Plus, Minus, Home } from "lucide-react";
+import type { TravelState } from "@/lib/routetr/types";
+import { Plus, Minus, Home, RefreshCw } from "lucide-react";
 
-const BASE_VIEWBOX = { x: 40, y: 20, w: 1010, h: 445 };
+const BASE_VIEWBOX = { x: -3.7, y: -4.2, w: 1446.0, h: 639.2 };
 
 interface FilterOptions {
   searchQuery: string;
@@ -26,79 +28,143 @@ interface TurkeyMapProps {
   onProvinceClick: (plate: string) => void;
 }
 
-// ---------- Memoized district group (yalnız ilgili il yeniden render olur) ----------
-const ProvinceGroup = React.memo(function ProvinceGroup({
-  province,
-  provinceState,
-  score,
-  dimmed,
-  highlighted,
-  onHover,
-  onLeave,
-  onClick,
-}: {
-  province: Province;
-  provinceState: TravelState[string] | undefined;
-  score: number;
-  dimmed: boolean;
-  highlighted: boolean;
-  onHover: (e: React.MouseEvent, plate: string, district: string | null) => void;
-  onLeave: () => void;
-  onClick: (plate: string) => void;
-}) {
-  const status = provinceState?.status || "unvisited";
-  const visitedSet = useMemo(() => new Set(provinceState?.visitedDistricts || []), [provinceState?.visitedDistricts]);
+// ---------- SVG metni için modül seviyesi önbellek (remount'ta tekrar fetch edilmez) ----------
+// NEXT_PUBLIC_BASE_PATH: GitHub Pages alt klasörü (/RouteTR) yayınları için build'de verilir
+const ASSET_BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
+let svgTextCache: string | null = null;
+let svgTextPromise: Promise<string> | null = null;
 
-  const color = getHeatmapColor(status, score);
-
-  return (
-    <g opacity={dimmed ? 0.18 : 1}>
-      {province.district_paths.map((dp, idx) => {
-        const isDistrictVisited = visitedSet.has(dp.name);
-        let fill: string = "#182032";
-        if (status === "transit") fill = "url(#transit-hatch)";
-        else if (status === "lived") fill = isDistrictVisited ? "#3b82f6" : "#1e3a8a";
-        else if (isDistrictVisited) fill = color;
-        else if (status === "visited") fill = "#26334d";
-
-        return (
-          <path
-            key={`${province.plate}-${idx}`}
-            data-plate={province.plate}
-            data-district={dp.name}
-            d={dp.d}
-            fill={fill}
-            className="rtr-district-path"
-            onMouseEnter={(e) => onHover(e, province.plate, dp.name)}
-            onMouseLeave={onLeave}
-            onClick={() => onClick(province.plate)}
-          />
-        );
-      })}
-      <path
-        d={province.svg_d}
-        fill="none"
-        stroke={highlighted ? "#f97316" : "#3d4a66"}
-        strokeWidth={highlighted ? 3 : 1.6}
-        className="rtr-province-border pointer-events-none"
-      />
-    </g>
-  );
-});
+function loadSvgText(): Promise<string> {
+  if (svgTextCache) return Promise.resolve(svgTextCache);
+  if (!svgTextPromise) {
+    svgTextPromise = fetch(`${ASSET_BASE}/turkey-map.svg`)
+      .then((r) => {
+        if (!r.ok) throw new Error(`Harita yüklenemedi (${r.status})`);
+        return r.text();
+      })
+      .then((t) => {
+        svgTextCache = t;
+        return t;
+      })
+      .catch((err) => {
+        svgTextPromise = null; // yeniden denemeye izin ver
+        throw err;
+      });
+  }
+  return svgTextPromise;
+}
 
 // ---------- Ana Harita ----------
 export default function TurkeyMap({ filter, onProvinceClick }: TurkeyMapProps) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const districtsLayerRef = useRef<SVGGElement | null>(null);
+  const bordersLayerRef = useRef<SVGGElement | null>(null);
   const viewRef = useRef({ ...BASE_VIEWBOX });
   const pointers = useRef<Map<number, { x: number; y: number }>>(new Map());
   const pinchStart = useRef<{ dist: number; view: { x: number; y: number; w: number; h: number } } | null>(null);
   const [tooltip, setTooltip] = React.useState<{ plate: string; district: string | null } | null>(null);
   const [zoomPct, setZoomPct] = React.useState(100);
+  const [ready, setReady] = React.useState(false);
+  const [failed, setFailed] = React.useState(false);
+  const [loadTick, setLoadTick] = React.useState(0); // yeniden dene tetikleyicisi
 
   const travelState = useRouteTR((s) => s.travelState);
 
+  // ---------- Harita geometrisini yükle ve katmanlara işle ----------
+  useEffect(() => {
+    let cancelled = false;
+    loadSvgText()
+      .then((text) => {
+        if (cancelled) return;
+        // image/svg+xml ile parse: script çalıştırılmaz, kendi statik dosyamız
+        const doc = new DOMParser().parseFromString(text, "image/svg+xml");
+        const err = doc.querySelector("parsererror");
+        if (err) throw new Error("Harita XML ayrıştırma hatası");
+        const dl = doc.getElementById("districts-layer");
+        const bl = doc.getElementById("province-borders");
+        const dlNode = districtsLayerRef.current;
+        const blNode = bordersLayerRef.current;
+        if (!dl || !bl || !dlNode || !blNode) throw new Error("Harita katmanları eksik");
+        // Grubun KENDİNİ değil, çocuklarını import et (iç içe g katmanı oluşmasın)
+        while (dlNode.firstChild) dlNode.removeChild(dlNode.firstChild);
+        const dFrag = document.createDocumentFragment();
+        Array.from(dl.children).forEach((c) => dFrag.appendChild(document.importNode(c, true)));
+        dlNode.appendChild(dFrag);
+        while (blNode.firstChild) blNode.removeChild(blNode.firstChild);
+        const bFrag = document.createDocumentFragment();
+        Array.from(bl.children).forEach((c) => bFrag.appendChild(document.importNode(c, true)));
+        blNode.appendChild(bFrag);
+        setReady(true);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setReady(false);
+          setFailed(true);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [loadTick]);
+
+  const provByPlate = useMemo(() => {
+    const m = new Map<string, (typeof PROVINCES_DATA)[number]>();
+    PROVINCES_DATA.forEach((p) => m.set(p.plate, p));
+    return m;
+  }, []);
+
+  // ---------- Boyama: state / filtre her değiştiğinde ilçeleri imperatif güncelle ----------
+  useEffect(() => {
+    const layer = districtsLayerRef.current;
+    const borders = bordersLayerRef.current;
+    if (!ready || !layer || !borders) return;
+
+    const isAnySearch = !!filter.searchQuery;
+    const scores = new Map<string, number>();
+    const matchedPlates = new Set<string>();
+    PROVINCES_DATA.forEach((p) => {
+      scores.set(p.plate, calculateProvinceScore(travelState, p.plate));
+      if (isAnySearch && checkProvinceMatch(travelState, p, filter)) matchedPlates.add(p.plate);
+    });
+
+    const groups = layer.children;
+    for (let i = 0; i < groups.length; i++) {
+      const g = groups[i] as SVGGElement;
+      const plate = g.getAttribute("data-plate") || "";
+      const dName = g.getAttribute("data-d") || "";
+      const pData: TravelState[string] | undefined = travelState[plate];
+      const status = pData?.status || "unvisited";
+      const visited = pData?.visitedDistricts || [];
+      const isVisited = visited.includes(dName);
+      const path = g.firstElementChild as SVGPathElement | null;
+      if (!path) continue;
+
+      let fill = "#182032";
+      if (status === "transit") fill = "url(#transit-hatch)";
+      else if (status === "lived") fill = isVisited ? "#3b82f6" : "#1e3a8a";
+      else if (isVisited) fill = getHeatmapColor(status, scores.get(plate) || 0);
+      else if (status === "visited") fill = "#26334d";
+      path.setAttribute("fill", fill);
+
+      if (isAnySearch) g.setAttribute("opacity", matchedPlates.has(plate) ? "1" : "0.15");
+      else g.removeAttribute("opacity");
+    }
+
+    const bGroups = borders.children;
+    for (let i = 0; i < bGroups.length; i++) {
+      const g = bGroups[i] as SVGGElement;
+      const plate = g.getAttribute("data-plate") || "";
+      const path = g.firstElementChild as SVGPathElement | null;
+      if (!path) continue;
+      const hot = isAnySearch && matchedPlates.has(plate);
+      path.setAttribute("stroke", hot ? "#f97316" : "#3d4a66");
+      path.setAttribute("stroke-width", hot ? "2.5" : "1.1");
+    }
+  }, [ready, travelState, filter]);
+
+  // ---------- Zoom ----------
   const applyView = useCallback(() => {
     const svg = svgRef.current;
     if (!svg) return;
@@ -140,7 +206,7 @@ export default function TurkeyMap({ filter, onProvinceClick }: TurkeyMapProps) {
     return () => svg.removeEventListener("wheel", onWheel);
   }, [zoomAt]);
 
-  // Pointer pan + pinch
+  // ---------- Pointer pan + pinch ----------
   const onPointerDown = (e: React.PointerEvent) => {
     (e.target as Element).setPointerCapture?.(e.pointerId);
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
@@ -199,7 +265,7 @@ export default function TurkeyMap({ filter, onProvinceClick }: TurkeyMapProps) {
     applyView();
   }, [applyView]);
 
-  // Tooltip konumu (imperatif, re-render gerektirmez)
+  // ---------- Tooltip (event delegation ile; enjekte edilen DOM'a handler gerekmez) ----------
   const moveTooltip = useCallback((e: React.MouseEvent) => {
     const wrap = wrapRef.current;
     const tip = tooltipRef.current;
@@ -213,15 +279,33 @@ export default function TurkeyMap({ filter, onProvinceClick }: TurkeyMapProps) {
     tip.style.top = `${y}px`;
   }, []);
 
-  const handleHover = useCallback((e: React.MouseEvent, plate: string, district: string | null) => {
-    setTooltip({ plate, district });
-    moveTooltip(e);
-  }, [moveTooltip]);
-  const handleLeave = useCallback(() => setTooltip(null), []);
+  const onSvgOver = useCallback(
+    (e: React.MouseEvent) => {
+      const g = (e.target as Element).closest?.("g[data-d]");
+      const plate = g?.getAttribute("data-plate");
+      if (plate) {
+        setTooltip({ plate, district: g?.getAttribute("data-d") || null });
+        moveTooltip(e);
+        return;
+      }
+      setTooltip(null);
+    },
+    [moveTooltip]
+  );
+  const onSvgOut = useCallback(() => setTooltip(null), []);
+
+  const onSvgClick = useCallback(
+    (e: React.MouseEvent) => {
+      const g = (e.target as Element).closest?.("g[data-plate]");
+      const plate = g?.getAttribute("data-plate");
+      if (plate) onProvinceClick(plate);
+    },
+    [onProvinceClick]
+  );
 
   const tooltipData = useMemo(() => {
     if (!tooltip) return null;
-    const meta = PROVINCES_DATA.find((p) => p.plate === tooltip.plate);
+    const meta = provByPlate.get(tooltip.plate);
     if (!meta) return null;
     const pData = travelState[tooltip.plate];
     const score = calculateProvinceScore(travelState, tooltip.plate);
@@ -229,59 +313,72 @@ export default function TurkeyMap({ filter, onProvinceClick }: TurkeyMapProps) {
       pData?.status === "transit" ? "🚗 Transit / Mola" : pData?.status === "visited" ? "🎒 Gezdim" : pData?.status === "lived" ? "🏡 Yaşadım" : "Gitmedim";
     const isDistVisited = tooltip.district ? (pData?.visitedDistricts || []).includes(tooltip.district) : false;
     return { meta, pData, score, statusText, isDistVisited, district: tooltip.district };
-  }, [tooltip, travelState]);
+  }, [tooltip, travelState, provByPlate]);
 
   return (
     <div className="relative select-none" ref={wrapRef} data-tour="map">
-      <svg
-        ref={svgRef}
-        id="turkey-svg-map"
-        viewBox={`${BASE_VIEWBOX.x} ${BASE_VIEWBOX.y} ${BASE_VIEWBOX.w} ${BASE_VIEWBOX.h}`}
-        preserveAspectRatio="xMidYMid meet"
-        className="w-full h-auto rounded-xl bg-[#0d1220] touch-none cursor-grab active:cursor-grabbing"
-        role="img"
-        aria-label="Türkiye interaktif il ve ilçe haritası"
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
-      >
-        <defs>
-          <pattern id="transit-hatch" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
-            <line x1="0" y1="0" x2="0" y2="8" stroke="#f59e0b" strokeWidth="2.5" />
-          </pattern>
-        </defs>
+      {failed ? (
+        <div className="flex aspect-[1446/639] w-full flex-col items-center justify-center gap-3 rounded-xl bg-[#0d1220] text-center">
+          <span className="text-sm text-gray-400">Harita yüklenirken bir sorun oluştu 😕</span>
+          <button
+            type="button"
+            onClick={() => {
+              setFailed(false);
+              setLoadTick((t) => t + 1);
+            }}
+            className="inline-flex items-center gap-2 rounded-lg border border-[#f97316]/50 bg-[#f97316]/10 px-4 py-2 text-sm font-semibold text-[#fdba74] transition hover:bg-[#f97316]/20"
+          >
+            <RefreshCw className="h-4 w-4" /> Tekrar dene
+          </button>
+        </div>
+      ) : (
+        <svg
+          ref={svgRef}
+          id="turkey-svg-map"
+          viewBox={`${BASE_VIEWBOX.x} ${BASE_VIEWBOX.y} ${BASE_VIEWBOX.w} ${BASE_VIEWBOX.h}`}
+          preserveAspectRatio="xMidYMid meet"
+          className="w-full touch-none rounded-xl bg-[#0d1220] cursor-grab active:cursor-grabbing"
+          role="img"
+          aria-label="Türkiye interaktif il ve ilçe haritası"
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+          onMouseOver={onSvgOver}
+          onMouseOut={onSvgOut}
+          onClick={onSvgClick}
+        >
+          <defs>
+            <pattern id="transit-hatch" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+              <line x1="0" y1="0" x2="0" y2="8" stroke="#f59e0b" strokeWidth="2.5" />
+            </pattern>
+          </defs>
 
-        <g id="districts-layer">
-          {PROVINCES_DATA.map((p) => {
-            const pData = travelState[p.plate];
-            const score = calculateProvinceScore(travelState, p.plate);
-            const matched = checkProvinceMatch(travelState, p, filter);
-            const isAnySearch = !!filter.searchQuery;
-            return (
-              <ProvinceGroup
-                key={p.plate}
-                province={p}
-                provinceState={pData}
-                score={score}
-                dimmed={isAnySearch && !matched}
-                highlighted={matched && isAnySearch}
-                onHover={handleHover}
-                onLeave={handleLeave}
-                onClick={onProvinceClick}
-              />
-            );
-          })}
-        </g>
+          {/* İçerik public/turkey-map.svg dosyasından runtime'da enjekte edilir */}
+          <g id="districts-layer" ref={districtsLayerRef} />
+          <g id="province-borders" ref={bordersLayerRef} className="pointer-events-none" />
+        </svg>
+      )}
 
-        {/* Ülke dış sınırı */}
-        <path d={COUNTRY_BORDER_SVG_D} fill="none" stroke="#f97316" strokeWidth="2.4" className="pointer-events-none" strokeLinejoin="round" />
-      </svg>
+      {/* Yükleniyor iskeleti */}
+      {!ready && !failed && (
+        <div
+          className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-xl bg-[#0d1220]"
+          role="status"
+          aria-live="polite"
+          aria-label="Harita yükleniyor"
+        >
+          <div className="flex flex-col items-center gap-3">
+            <span className="h-9 w-9 animate-spin rounded-full border-2 border-[#2e3a52] border-t-[#f97316]" aria-hidden="true" />
+            <span className="text-xs font-medium text-gray-500">Türkiye haritası yükleniyor…</span>
+          </div>
+        </div>
+      )}
 
       {/* Tooltip */}
       <div ref={tooltipRef} className="pointer-events-none absolute z-20 hidden md:block" style={{ display: tooltipData ? "block" : "none" }}>
         {tooltipData && (
-          <div className="rounded-lg border border-[#2e3a52] bg-[#0b0f19]/95 px-3 py-2 shadow-xl backdrop-blur-sm max-w-[220px]">
+          <div className="max-w-[220px] rounded-lg border border-[#2e3a52] bg-[#0b0f19]/95 px-3 py-2 shadow-xl backdrop-blur-sm">
             <div className="text-sm font-bold text-white">
               <span className="text-[#f59e0b]">{tooltipData.meta.plate}</span> {tooltipData.meta.name}
               {tooltipData.district && <span className="ml-1 text-xs font-normal text-gray-400">› {tooltipData.district}</span>}
@@ -325,7 +422,7 @@ export default function TurkeyMap({ filter, onProvinceClick }: TurkeyMapProps) {
         >
           <Home className="h-4 w-4" />
         </button>
-        <span className="text-center text-[10px] font-medium text-gray-500">%{zoomPct}</span>  {/* canlı zoom göstergesi */}
+        <span className="text-center text-[10px] font-medium text-gray-500">%{zoomPct}</span> {/* canlı zoom göstergesi */}
       </div>
 
       <p className="mt-2 text-center text-xs text-gray-500 md:hidden">İpucu: Haritayı parmaklarınla kaydırabilir, iki parmakla yakınlaştırabilirsin 👆</p>

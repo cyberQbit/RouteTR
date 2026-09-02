@@ -14,6 +14,7 @@ import { PROVINCE_GEO, PROVINCE_FOODS } from "@/data/routetr/geo";
 import { useRouteTR } from "@/lib/routetr/store";
 import { calculateProvinceScore, getPoiCategory, POI_CATEGORIES, POI_FALLBACK_CATEGORY, poiSearchUrl, provinceDirectionsUrl, normalizeText } from "@/lib/routetr/logic";
 import type { VisitStatus, WeatherInfo } from "@/lib/routetr/types";
+import { fetchWeather } from "@/lib/routetr/weather";
 import { useToast } from "@/hooks/use-toast";
 
 const STATUS_OPTIONS: { value: VisitStatus; label: string; icon: string }[] = [
@@ -32,10 +33,9 @@ function WeatherChip({ plate }: { plate: string }) {
   useEffect(() => {
     if (!geo) return;
     let cancelled = false;
-    fetch(`/api/weather?lat=${geo.lat}&lng=${geo.lng}`)
-      .then((r) => r.json())
-      .then((j) => {
-        if (!cancelled && j?.ok) setWeather(j as WeatherInfo);
+    fetchWeather(geo.lat, geo.lng)
+      .then((w) => {
+        if (!cancelled && w) setWeather(w);
       })
       .catch(() => {})
       .finally(() => {
