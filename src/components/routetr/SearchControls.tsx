@@ -34,6 +34,14 @@ export default function SearchControls({
   const [open, setOpen] = useState(false);
   const boxRef = useRef<HTMLDivElement | null>(null);
 
+  // Sayfa her yenilendiğinde rastgele bir il + o ilin rastgele bir ilçesi örnek gösterilir
+  // (mounted-guard sayesinde yalnızca istemcide render edilir; SSR uyumsuzluğu yoktur)
+  const placeholder = useMemo(() => {
+    const p = PROVINCES_DATA[Math.floor(Math.random() * PROVINCES_DATA.length)];
+    const d = p.districts.length > 0 ? p.districts[Math.floor(Math.random() * p.districts.length)] : p.name;
+    return `Şehir, ilçe, nokta veya plaka ara (örn: ${p.name}, ${p.plate}, ${d})…`;
+  }, []);
+
   const suggestions = useMemo<Suggestion[]>(() => {
     const q = normalizeText(filter.searchQuery);
     if (!q) return [];
@@ -107,7 +115,7 @@ export default function SearchControls({
             }
             if (e.key === "Escape") setOpen(false);
           }}
-          placeholder="Şehir, ilçe, nokta veya plaka ara (örn: Eskişehir, 26, Mihalıççık)…"
+          placeholder={placeholder}
           className="w-full rounded-xl border border-[#2e3a52] bg-[#0e1422] py-2.5 pl-10 pr-10 text-sm text-gray-100 placeholder:text-gray-600 outline-none transition focus:border-[#f97316] focus:ring-2 focus:ring-[#f97316]/20"
         />
         {filter.searchQuery && (

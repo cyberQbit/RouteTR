@@ -141,12 +141,26 @@ export default function TurkeyMap({ filter, onProvinceClick }: TurkeyMapProps) {
       const path = g.firstElementChild as SVGPathElement | null;
       if (!path) continue;
 
+      // Renk skalası (lejantla birebir):
+      // - Aktif ilde SEÇİLİ ilçeler lejant renginin dolgusunu,
+      //   seçilmemiş ilçeler aynı rengin yarı saydam tonunu alır →
+      //   il uzaktan skor bandına göre, yakından ilçe detayına göre renklenir.
+      // - Transit: seçili ilçe düz amber, diğerleri tarama deseni.
+      // - Yaşadım: lejanttaki #2563eb / koyu ton #1e3a8a.
       let fill = "#182032";
-      if (status === "transit") fill = "url(#transit-hatch)";
-      else if (status === "lived") fill = isVisited ? "#3b82f6" : "#1e3a8a";
-      else if (isVisited) fill = getHeatmapColor(status, scores.get(plate) || 0);
-      else if (status === "visited") fill = "#26334d";
+      let fillOpacity: string | null = null;
+
+      if (status === "transit") {
+        fill = isVisited ? "#f59e0b" : "url(#transit-hatch)";
+      } else if (status === "lived") {
+        fill = isVisited ? "#2563eb" : "#1e3a8a";
+      } else if (status === "visited") {
+        fill = getHeatmapColor(status, scores.get(plate) || 0);
+        if (!isVisited) fillOpacity = "0.35";
+      }
       path.setAttribute("fill", fill);
+      if (fillOpacity) path.setAttribute("fill-opacity", fillOpacity);
+      else path.removeAttribute("fill-opacity");
 
       if (isAnySearch) g.setAttribute("opacity", matchedPlates.has(plate) ? "1" : "0.15");
       else g.removeAttribute("opacity");
@@ -354,9 +368,12 @@ export default function TurkeyMap({ filter, onProvinceClick }: TurkeyMapProps) {
             </pattern>
           </defs>
 
-          {/* İçerik public/turkey-map.svg dosyasından runtime'da enjekte edilir */}
-          <g id="districts-layer" ref={districtsLayerRef} />
-          <g id="province-borders" ref={bordersLayerRef} className="pointer-events-none" />
+          {/* İlçe sınırları: SVG dosyasından yalnızca path'ler import edildiği için
+              katman stroke'u kaybolur; burada yeniden tanımlanır (azıcık belirgin, il sınırından yumuşak) */}
+          <g id="districts-layer" ref={districtsLayerRef} stroke="#2e3d5c" strokeWidth={0.75} strokeLinejoin="round" />
+          {/* Kritik: dosyadaki fill="none" import sırasında kaybolur; düzeltilmezse il kenarlık
+              path'leri opak siyah dolguyla ilçe renklerinin ÜZERİNÖRTer → renk skalası görünmez! */}
+          <g id="province-borders" ref={bordersLayerRef} className="pointer-events-none" fill="none" />
         </svg>
       )}
 

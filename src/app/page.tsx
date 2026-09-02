@@ -139,7 +139,7 @@ export default function Home() {
       <footer className="mt-auto border-t border-[#1e293b] bg-[#090d16] pb-[env(safe-area-inset-bottom)]">
         <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-2 px-3 py-4 md:flex-row md:px-6">
           <div className="text-xs text-gray-500">
-            <strong className="text-gray-300">Route TR</strong> • Türkiye Seyahat & Keşif Haritası • v3.0
+            <strong className="text-gray-300">Route TR</strong> • Türkiye Seyahat & Keşif Haritası • v3.2
           </div>
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs">
             <a
