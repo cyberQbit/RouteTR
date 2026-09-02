@@ -1,0 +1,1167 @@
+     1→/* --------------------------------------------------------------------------
+     2→ * ROUTE TR — CLEAN, MODERN & ULTRA-RESPONSIVE STYLESHEET
+     3→ * Modern Dark Aesthetic • 81 Provinces & Districts Heatmap Engine
+     4→ * -------------------------------------------------------------------------- */
+     5→
+     6→@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+     7→
+     8→:root {
+     9→  --bg-main: #0b0f19;
+    10→  --bg-secondary: #111827;
+    11→  --bg-card: #1a2236;
+    12→  --bg-card-hover: #222d46;
+    13→  --bg-input: #0e1422;
+    14→  
+    15→  --border-subtle: #232f45;
+    16→  --border-card: #2e3a52;
+    17→  --border-highlight: #3b82f6;
+    18→  
+    19→  --text-primary: #f9fafb;
+    20→  --text-secondary: #9ca3af;
+    21→  --text-muted: #6b7280;
+    22→  
+    23→  --accent-orange: #f97316;
+    24→  --accent-amber: #f59e0b;
+    25→  --accent-red: #ef4444;
+    26→  --accent-blue: #3b82f6;
+    27→  --accent-emerald: #10b981;
+    28→  
+    29→  --status-unvisited: #182032;
+    30→  --status-transit: #f59e0b;
+    31→  --status-low: #fb923c;
+    32→  --status-mid: #ea580c;
+    33→  --status-high: #dc2626;
+    34→  --status-complete: #9333ea;
+    35→  --status-lived: #2563eb;
+    36→  
+    37→  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    38→  --radius-sm: 6px;
+    39→  --radius-md: 10px;
+    40→  --radius-lg: 16px;
+    41→  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.35);
+    42→  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.6);
+    43→}
+    44→
+    45→/* Reset */
+    46→*, *::before, *::after {
+    47→  box-sizing: border-box;
+    48→  margin: 0;
+    49→  padding: 0;
+    50→}
+    51→
+    52→html, body {
+    53→  width: 100%;
+    54→  overflow-x: hidden;
+    55→  background-color: var(--bg-main);
+    56→  color: var(--text-primary);
+    57→  font-family: var(--font-sans);
+    58→  line-height: 1.5;
+    59→  -webkit-font-smoothing: antialiased;
+    60→}
+    61→
+    62→/* Header */
+    63→header {
+    64→  background: rgba(17, 24, 39, 0.95);
+    65→  border-bottom: 1px solid var(--border-subtle);
+    66→  position: sticky;
+    67→  top: 0;
+    68→  z-index: 50;
+    69→  backdrop-filter: blur(10px);
+    70→  -webkit-backdrop-filter: blur(10px);
+    71→}
+    72→
+    73→.header-inner {
+    74→  max-width: 1440px;
+    75→  margin: 0 auto;
+    76→  padding: 0.85rem 1.5rem;
+    77→  display: flex;
+    78→  justify-content: space-between;
+    79→  align-items: center;
+    80→  gap: 1rem;
+    81→}
+    82→
+    83→.brand-wrap {
+    84→  display: flex;
+    85→  align-items: center;
+    86→  gap: 0.85rem;
+    87→  text-decoration: none;
+    88→}
+    89→
+    90→.route-shield-svg {
+    91→  width: 44px;
+    92→  height: 44px;
+    93→  flex-shrink: 0;
+    94→  filter: drop-shadow(0 2px 6px rgba(249, 115, 22, 0.35));
+    95→}
+    96→
+    97→.brand-text h1 {
+    98→  font-size: 1.3rem;
+    99→  font-weight: 800;
+   100→  letter-spacing: -0.02em;
+   101→  color: var(--text-primary);
+   102→  line-height: 1.1;
+   103→}
+   104→
+   105→.brand-text p {
+   106→  font-size: 0.75rem;
+   107→  color: var(--text-secondary);
+   108→}
+   109→
+   110→.header-actions {
+   111→  display: flex;
+   112→  align-items: center;
+   113→  gap: 0.6rem;
+   114→  flex-wrap: wrap;
+   115→}
+   116→
+   117→/* Button System */
+   118→.btn {
+   119→  display: inline-flex;
+   120→  align-items: center;
+   121→  justify-content: center;
+   122→  gap: 0.45rem;
+   123→  padding: 0.5rem 0.95rem;
+   124→  font-size: 0.82rem;
+   125→  font-weight: 600;
+   126→  border-radius: var(--radius-sm);
+   127→  cursor: pointer;
+   128→  transition: all 0.2s ease;
+   129→  border: 1px solid transparent;
+   130→  text-decoration: none;
+   131→  white-space: nowrap;
+   132→  user-select: none;
+   133→}
+   134→
+   135→.btn:active {
+   136→  transform: scale(0.97);
+   137→}
+   138→
+   139→.btn-primary {
+   140→  background-color: var(--accent-orange);
+   141→  color: #ffffff;
+   142→}
+   143→
+   144→.btn-primary:hover {
+   145→  background-color: #ea580c;
+   146→  box-shadow: 0 0 12px rgba(249, 115, 22, 0.4);
+   147→}
+   148→
+   149→.btn-secondary {
+   150→  background-color: var(--bg-card);
+   151→  color: var(--text-primary);
+   152→  border-color: var(--border-card);
+   153→}
+   154→
+   155→.btn-secondary:hover {
+   156→  background-color: var(--bg-card-hover);
+   157→  border-color: var(--text-secondary);
+   158→}
+   159→
+   160→.btn-danger {
+   161→  background-color: rgba(239, 68, 68, 0.15);
+   162→  color: #fca5a5;
+   163→  border-color: rgba(239, 68, 68, 0.35);
+   164→}
+   165→
+   166→.btn-danger:hover {
+   167→  background-color: var(--accent-red);
+   168→  color: #ffffff;
+   169→}
+   170→
+   171→/* Dashboard Summary Cards */
+   172→.dashboard-bar {
+   173→  background-color: var(--bg-secondary);
+   174→  border-bottom: 1px solid var(--border-subtle);
+   175→  padding: 1rem 1.5rem;
+   176→}
+   177→
+   178→.stats-grid {
+   179→  max-width: 1440px;
+   180→  margin: 0 auto;
+   181→  display: grid;
+   182→  grid-template-columns: repeat(4, 1fr);
+   183→  gap: 1rem;
+   184→}
+   185→
+   186→.stat-card {
+   187→  background-color: var(--bg-card);
+   188→  border: 1px solid var(--border-card);
+   189→  border-radius: var(--radius-md);
+   190→  padding: 0.85rem 1.15rem;
+   191→  display: flex;
+   192→  align-items: center;
+   193→  gap: 0.85rem;
+   194→  box-shadow: var(--shadow-card);
+   195→}
+   196→
+   197→.stat-icon-wrap {
+   198→  width: 42px;
+   199→  height: 42px;
+   200→  border-radius: var(--radius-sm);
+   201→  background-color: rgba(249, 115, 22, 0.12);
+   202→  display: flex;
+   203→  align-items: center;
+   204→  justify-content: center;
+   205→  font-size: 1.35rem;
+   206→  flex-shrink: 0;
+   207→}
+   208→
+   209→.stat-content {
+   210→  min-width: 0;
+   211→}
+   212→
+   213→.stat-label {
+   214→  font-size: 0.72rem;
+   215→  font-weight: 600;
+   216→  text-transform: uppercase;
+   217→  color: var(--text-secondary);
+   218→  letter-spacing: 0.03em;
+   219→  white-space: nowrap;
+   220→  overflow: hidden;
+   221→  text-overflow: ellipsis;
+   222→}
+   223→
+   224→.stat-val {
+   225→  font-size: 1.35rem;
+   226→  font-weight: 800;
+   227→  color: var(--text-primary);
+   228→  line-height: 1.2;
+   229→}
+   230→
+   231→.stat-sub {
+   232→  font-size: 0.72rem;
+   233→  color: var(--text-muted);
+   234→  white-space: nowrap;
+   235→  overflow: hidden;
+   236→  text-overflow: ellipsis;
+   237→}
+   238→
+   239→/* Main Container */
+   240→main {
+   241→  max-width: 1440px;
+   242→  margin: 0 auto;
+   243→  padding: 1.5rem;
+   244→  flex: 1;
+   245→  width: 100%;
+   246→  display: flex;
+   247→  flex-direction: column;
+   248→  gap: 1.5rem;
+   249→}
+   250→
+   251→/* Controls & Filter Bar */
+   252→.controls-bar {
+   253→  display: flex;
+   254→  flex-wrap: wrap;
+   255→  justify-content: space-between;
+   256→  align-items: center;
+   257→  gap: 0.85rem;
+   258→  background-color: var(--bg-secondary);
+   259→  padding: 0.85rem 1.25rem;
+   260→  border-radius: var(--radius-md);
+   261→  border: 1px solid var(--border-card);
+   262→}
+   263→
+   264→.search-box {
+   265→  position: relative;
+   266→  flex: 1 1 260px;
+   267→  max-width: 480px;
+   268→}
+   269→
+   270→.search-icon {
+   271→  position: absolute;
+   272→  left: 0.85rem;
+   273→  top: 50%;
+   274→  transform: translateY(-50%);
+   275→  color: var(--text-muted);
+   276→  pointer-events: none;
+   277→}
+   278→
+   279→.search-box input {
+   280→  width: 100%;
+   281→  padding: 0.55rem 1rem 0.55rem 2.4rem;
+   282→  background-color: var(--bg-input);
+   283→  border: 1px solid var(--border-card);
+   284→  border-radius: var(--radius-sm);
+   285→  color: var(--text-primary);
+   286→  font-size: 0.85rem;
+   287→  font-family: inherit;
+   288→  outline: none;
+   289→  transition: border-color 0.2s ease;
+   290→}
+   291→
+   292→.search-box input:focus {
+   293→  border-color: var(--accent-orange);
+   294→  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
+   295→}
+   296→
+   297→.filter-group {
+   298→  display: flex;
+   299→  flex-wrap: wrap;
+   300→  align-items: center;
+   301→  gap: 0.5rem;
+   302→}
+   303→
+   304→.filter-select {
+   305→  background-color: var(--bg-input);
+   306→  border: 1px solid var(--border-card);
+   307→  color: var(--text-primary);
+   308→  padding: 0.55rem 0.85rem;
+   309→  border-radius: var(--radius-sm);
+   310→  font-size: 0.82rem;
+   311→  font-family: inherit;
+   312→  outline: none;
+   313→  cursor: pointer;
+   314→}
+   315→
+   316→.filter-select:focus {
+   317→  border-color: var(--accent-orange);
+   318→}
+   319→
+   320→/* Map Section */
+   321→.map-section {
+   322→  background-color: var(--bg-secondary);
+   323→  border: 1px solid var(--border-card);
+   324→  border-radius: var(--radius-lg);
+   325→  padding: 1.25rem 1.5rem;
+   326→  display: flex;
+   327→  flex-direction: column;
+   328→  gap: 1rem;
+   329→  box-shadow: var(--shadow-card);
+   330→}
+   331→
+   332→.map-header {
+   333→  display: flex;
+   334→  justify-content: space-between;
+   335→  align-items: center;
+   336→  flex-wrap: wrap;
+   337→  gap: 0.5rem;
+   338→}
+   339→
+   340→.map-header h2 {
+   341→  font-size: 1.1rem;
+   342→  font-weight: 700;
+   343→  display: flex;
+   344→  align-items: center;
+   345→  gap: 0.5rem;
+   346→}
+   347→
+   348→.map-wrapper {
+   349→  width: 100%;
+   350→  overflow: hidden;
+   351→  position: relative;
+   352→  background: #070b13;
+   353→  border-radius: var(--radius-md);
+   354→  border: 1px solid var(--border-subtle);
+   355→  display: flex;
+   356→  justify-content: center;
+   357→  align-items: center;
+   358→  padding: 1rem 0.5rem;
+   359→}
+   360→
+   361→#turkey-svg-map {
+   362→  width: 100%;
+   363→  height: auto;
+   364→  max-height: 560px;
+   365→  display: block;
+   366→}
+   367→
+   368→/* SVG Styling */
+   369→.interactive-province, .province-path, .district-path {
+   370→  fill: var(--status-unvisited);
+   371→  stroke: #2e3a52;
+   372→  stroke-width: 0.8;
+   373→  stroke-linejoin: round;
+   374→  cursor: pointer;
+   375→  transition: fill 0.2s ease, stroke 0.2s ease, opacity 0.2s ease;
+   376→}
+   377→
+   378→.interactive-province:hover, .district-path:hover {
+   379→  stroke: #ffffff;
+   380→  stroke-width: 1.6;
+   381→  filter: drop-shadow(0 0 6px rgba(249, 115, 22, 0.8));
+   382→}
+   383→
+   384→.province-thick-border {
+   385→  stroke: #4b5563;
+   386→  stroke-width: 2.2;
+   387→  stroke-linejoin: round;
+   388→  pointer-events: none;
+   389→}
+   390→
+   391→.country-thick-border {
+   392→  stroke: #e5e7eb;
+   393→  stroke-width: 3.5;
+   394→  stroke-linejoin: round;
+   395→  pointer-events: none;
+   396→}
+   397→
+   398→.province-label {
+   399→  font-size: 8.5px;
+   400→  font-weight: 700;
+   401→  fill: #f3f4f6;
+   402→  pointer-events: none;
+   403→  text-anchor: middle;
+   404→  dominant-baseline: central;
+   405→}
+   406→
+   407→/* Legend */
+   408→.map-legend {
+   409→  display: flex;
+   410→  flex-wrap: wrap;
+   411→  justify-content: center;
+   412→  gap: 1rem;
+   413→  padding-top: 0.85rem;
+   414→  border-top: 1px solid var(--border-subtle);
+   415→}
+   416→
+   417→.legend-item, .border-legend-item {
+   418→  display: flex;
+   419→  align-items: center;
+   420→  gap: 0.45rem;
+   421→  font-size: 0.75rem;
+   422→  color: var(--text-secondary);
+   423→}
+   424→
+   425→.legend-color {
+   426→  width: 13px;
+   427→  height: 13px;
+   428→  border-radius: 3px;
+   429→  border: 1px solid rgba(255, 255, 255, 0.15);
+   430→}
+   431→
+   432→.legend-color.unvisited { background-color: var(--status-unvisited); }
+   433→.legend-color.transit { background-color: var(--status-transit); }
+   434→.legend-color.low { background-color: var(--status-low); }
+   435→.legend-color.mid { background-color: var(--status-mid); }
+   436→.legend-color.high { background-color: var(--status-high); }
+   437→.legend-color.complete { background-color: var(--status-complete); }
+   438→.legend-color.lived { background-color: var(--status-lived); }
+   439→
+   440→.line-sample {
+   441→  width: 18px;
+   442→  height: 0;
+   443→  display: inline-block;
+   444→}
+   445→.line-sample.thick { border-top: 3px solid #e5e7eb; }
+   446→.line-sample.province { border-top: 2px solid #4b5563; }
+   447→.line-sample.thin { border-top: 1px solid #2e3a52; }
+   448→
+   449→/* Tooltip */
+   450→.map-tooltip {
+   451→  position: absolute;
+   452→  pointer-events: none;
+   453→  background: rgba(17, 24, 39, 0.96);
+   454→  border: 1px solid var(--accent-orange);
+   455→  color: var(--text-primary);
+   456→  padding: 0.5rem 0.75rem;
+   457→  border-radius: var(--radius-sm);
+   458→  font-size: 0.8rem;
+   459→  box-shadow: var(--shadow-lg);
+   460→  z-index: 60;
+   461→  display: none;
+   462→  transform: translate(-50%, -115%);
+   463→}
+   464→
+   465→/* Explorer Section */
+   466→.explorer-section {
+   467→  background-color: var(--bg-secondary);
+   468→  border: 1px solid var(--border-card);
+   469→  border-radius: var(--radius-lg);
+   470→  padding: 1.25rem 1.5rem;
+   471→  box-shadow: var(--shadow-card);
+   472→}
+   473→
+   474→.explorer-header {
+   475→  display: flex;
+   476→  justify-content: space-between;
+   477→  align-items: center;
+   478→  flex-wrap: wrap;
+   479→  gap: 0.5rem;
+   480→  margin-bottom: 1rem;
+   481→}
+   482→
+   483→.explorer-header h2 {
+   484→  font-size: 1.1rem;
+   485→  font-weight: 700;
+   486→}
+   487→
+   488→.provinces-grid {
+   489→  display: grid;
+   490→  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+   491→  gap: 0.75rem;
+   492→  max-height: 480px;
+   493→  overflow-y: auto;
+   494→  padding-right: 0.4rem;
+   495→}
+   496→
+   497→.province-card {
+   498→  background-color: var(--bg-card);
+   499→  border: 1px solid var(--border-card);
+   500→  border-radius: var(--radius-sm);
+   501→  padding: 0.75rem 0.95rem;
+   502→  display: flex;
+   503→  justify-content: space-between;
+   504→  align-items: center;
+   505→  cursor: pointer;
+   506→  transition: all 0.2s ease;
+   507→}
+   508→
+   509→.province-card:hover {
+   510→  background-color: var(--bg-card-hover);
+   511→  border-color: var(--accent-orange);
+   512→  transform: translateY(-2px);
+   513→}
+   514→
+   515→.province-card-left {
+   516→  display: flex;
+   517→  align-items: center;
+   518→  gap: 0.75rem;
+   519→  min-width: 0;
+   520→}
+   521→
+   522→.plate-badge {
+   523→  font-size: 0.78rem;
+   524→  font-weight: 700;
+   525→  background-color: #0c121e;
+   526→  border: 1px solid var(--border-card);
+   527→  color: var(--accent-amber);
+   528→  padding: 0.2rem 0.45rem;
+   529→  border-radius: 4px;
+   530→  flex-shrink: 0;
+   531→}
+   532→
+   533→.province-card-title {
+   534→  font-weight: 600;
+   535→  font-size: 0.9rem;
+   536→  white-space: nowrap;
+   537→  overflow: hidden;
+   538→  text-overflow: ellipsis;
+   539→}
+   540→
+   541→.province-card-region {
+   542→  font-size: 0.7rem;
+   543→  color: var(--text-muted);
+   544→  white-space: nowrap;
+   545→  overflow: hidden;
+   546→  text-overflow: ellipsis;
+   547→}
+   548→
+   549→.progress-pill {
+   550→  font-size: 0.72rem;
+   551→  font-weight: 700;
+   552→  padding: 0.2rem 0.55rem;
+   553→  border-radius: 20px;
+   554→  background-color: rgba(255, 255, 255, 0.08);
+   555→  color: var(--text-secondary);
+   556→  white-space: nowrap;
+   557→}
+   558→
+   559→/* Modal Window / Bottom-Sheet */
+   560→.modal-overlay {
+   561→  position: fixed;
+   562→  inset: 0;
+   563→  background-color: rgba(0, 0, 0, 0.75);
+   564→  backdrop-filter: blur(6px);
+   565→  -webkit-backdrop-filter: blur(6px);
+   566→  display: flex;
+   567→  justify-content: center;
+   568→  align-items: center;
+   569→  padding: 1.25rem;
+   570→  z-index: 100;
+   571→  opacity: 0;
+   572→  pointer-events: none;
+   573→  transition: opacity 0.25s ease;
+   574→}
+   575→
+   576→.modal-overlay.active {
+   577→  opacity: 1;
+   578→  pointer-events: auto;
+   579→}
+   580→
+   581→.modal-container {
+   582→  background-color: var(--bg-secondary);
+   583→  border: 1px solid var(--border-card);
+   584→  border-radius: var(--radius-lg);
+   585→  width: 100%;
+   586→  max-width: 720px;
+   587→  max-height: 90vh;
+   588→  display: flex;
+   589→  flex-direction: column;
+   590→  box-shadow: var(--shadow-lg);
+   591→  overflow: hidden;
+   592→  transform: scale(0.95);
+   593→  transition: transform 0.25s ease;
+   594→}
+   595→
+   596→.modal-overlay.active .modal-container {
+   597→  transform: scale(1);
+   598→}
+   599→
+   600→.modal-header {
+   601→  padding: 1.15rem 1.5rem;
+   602→  border-bottom: 1px solid var(--border-subtle);
+   603→  display: flex;
+   604→  justify-content: space-between;
+   605→  align-items: center;
+   606→  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+   607→}
+   608→
+   609→.modal-title-wrap {
+   610→  display: flex;
+   611→  align-items: center;
+   612→  gap: 0.75rem;
+   613→}
+   614→
+   615→.modal-title-wrap h2 {
+   616→  font-size: 1.25rem;
+   617→  font-weight: 700;
+   618→}
+   619→
+   620→.close-btn {
+   621→  background: none;
+   622→  border: none;
+   623→  color: var(--text-muted);
+   624→  font-size: 1.6rem;
+   625→  cursor: pointer;
+   626→  line-height: 1;
+   627→  padding: 0.2rem;
+   628→  border-radius: var(--radius-sm);
+   629→  transition: color 0.2s ease;
+   630→}
+   631→
+   632→.close-btn:hover {
+   633→  color: #ffffff;
+   634→}
+   635→
+   636→.modal-body {
+   637→  padding: 1.5rem;
+   638→  overflow-y: auto;
+   639→  display: flex;
+   640→  flex-direction: column;
+   641→  gap: 1.5rem;
+   642→}
+   643→
+   644→.section-title {
+   645→  font-size: 0.8rem;
+   646→  font-weight: 700;
+   647→  text-transform: uppercase;
+   648→  letter-spacing: 0.04em;
+   649→  color: var(--text-secondary);
+   650→  margin-bottom: 0.65rem;
+   651→  display: flex;
+   652→  justify-content: space-between;
+   653→  align-items: center;
+   654→}
+   655→
+   656→.status-options {
+   657→  display: grid;
+   658→  grid-template-columns: repeat(4, 1fr);
+   659→  gap: 0.5rem;
+   660→}
+   661→
+   662→.status-label {
+   663→  display: flex;
+   664→  align-items: center;
+   665→  gap: 0.45rem;
+   666→  padding: 0.6rem 0.8rem;
+   667→  background-color: var(--bg-card);
+   668→  border: 1px solid var(--border-card);
+   669→  border-radius: var(--radius-sm);
+   670→  font-size: 0.82rem;
+   671→  cursor: pointer;
+   672→  transition: all 0.2s ease;
+   673→}
+   674→
+   675→.status-label input {
+   676→  accent-color: var(--accent-orange);
+   677→}
+   678→
+   679→.status-label.selected {
+   680→  border-color: var(--accent-orange);
+   681→  background-color: rgba(249, 115, 22, 0.15);
+   682→  color: #ffffff;
+   683→}
+   684→
+   685→.district-actions {
+   686→  display: flex;
+   687→  gap: 0.4rem;
+   688→}
+   689→
+   690→.btn-xs {
+   691→  padding: 0.2rem 0.5rem;
+   692→  font-size: 0.7rem;
+   693→  border-radius: 4px;
+   694→}
+   695→
+   696→.districts-pill-grid {
+   697→  display: flex;
+   698→  flex-wrap: wrap;
+   699→  gap: 0.4rem;
+   700→}
+   701→
+   702→.district-pill {
+   703→  padding: 0.4rem 0.75rem;
+   704→  background-color: var(--bg-card);
+   705→  border: 1px solid var(--border-card);
+   706→  border-radius: 20px;
+   707→  font-size: 0.8rem;
+   708→  cursor: pointer;
+   709→  transition: all 0.15s ease;
+   710→  user-select: none;
+   711→}
+   712→
+   713→.district-pill.active {
+   714→  background-color: rgba(249, 115, 22, 0.22);
+   715→  border-color: var(--accent-orange);
+   716→  color: #fed7aa;
+   717→  font-weight: 600;
+   718→}
+   719→
+   720→.district-pill:hover {
+   721→  border-color: var(--accent-amber);
+   722→}
+   723→
+   724→.poi-list {
+   725→  display: flex;
+   726→  flex-direction: column;
+   727→  gap: 0.45rem;
+   728→}
+   729→
+   730→.poi-item {
+   731→  display: flex;
+   732→  align-items: center;
+   733→  gap: 0.75rem;
+   734→  padding: 0.6rem 0.85rem;
+   735→  background-color: var(--bg-card);
+   736→  border: 1px solid var(--border-card);
+   737→  border-radius: var(--radius-sm);
+   738→  font-size: 0.83rem;
+   739→  cursor: pointer;
+   740→  transition: background-color 0.15s ease;
+   741→}
+   742→
+   743→.poi-item:hover {
+   744→  background-color: var(--bg-card-hover);
+   745→}
+   746→
+   747→.poi-item input {
+   748→  accent-color: var(--accent-orange);
+   749→  width: 16px;
+   750→  height: 16px;
+   751→}
+   752→
+   753→.poi-item.checked {
+   754→  color: #fed7aa;
+   755→  border-color: rgba(249, 115, 22, 0.4);
+   756→}
+   757→
+   758→.add-poi-form {
+   759→  display: flex;
+   760→  gap: 0.5rem;
+   761→  margin-top: 0.5rem;
+   762→}
+   763→
+   764→.add-poi-form input {
+   765→  flex: 1;
+   766→  padding: 0.5rem 0.75rem;
+   767→  background-color: var(--bg-input);
+   768→  border: 1px solid var(--border-card);
+   769→  border-radius: var(--radius-sm);
+   770→  color: var(--text-primary);
+   771→  font-size: 0.82rem;
+   772→  font-family: inherit;
+   773→  outline: none;
+   774→}
+   775→
+   776→.add-poi-form input:focus {
+   777→  border-color: var(--accent-orange);
+   778→}
+   779→
+   780→.notes-textarea {
+   781→  width: 100%;
+   782→  min-height: 70px;
+   783→  padding: 0.75rem;
+   784→  background-color: var(--bg-input);
+   785→  border: 1px solid var(--border-card);
+   786→  border-radius: var(--radius-sm);
+   787→  color: var(--text-primary);
+   788→  font-family: inherit;
+   789→  font-size: 0.82rem;
+   790→  resize: vertical;
+   791→  outline: none;
+   792→}
+   793→
+   794→.notes-textarea:focus {
+   795→  border-color: var(--accent-orange);
+   796→}
+   797→
+   798→.modal-footer {
+   799→  padding: 1rem 1.5rem;
+   800→  border-top: 1px solid var(--border-subtle);
+   801→  display: flex;
+   802→  justify-content: space-between;
+   803→  align-items: center;
+   804→  background-color: var(--bg-card);
+   805→}
+   806→
+   807→/* Postcard Modal */
+   808→#postcard-canvas {
+   809→  max-width: 100%;
+   810→  height: auto;
+   811→  border-radius: var(--radius-md);
+   812→  border: 1px solid var(--border-card);
+   813→  box-shadow: var(--shadow-lg);
+   814→}
+   815→
+   816→/* Modern Minimalist Footer */
+   817→footer {
+   818→  background-color: var(--bg-secondary);
+   819→  border-top: 1px solid var(--border-subtle);
+   820→  padding: 1.25rem 1.5rem;
+   821→  margin-top: auto;
+   822→}
+   823→
+   824→.footer-inner {
+   825→  max-width: 1440px;
+   826→  margin: 0 auto;
+   827→  display: flex;
+   828→  flex-wrap: wrap;
+   829→  justify-content: space-between;
+   830→  align-items: center;
+   831→  gap: 0.75rem;
+   832→  font-size: 0.82rem;
+   833→  color: var(--text-secondary);
+   834→}
+   835→
+   836→.footer-brand-sig {
+   837→  display: flex;
+   838→  align-items: center;
+   839→  gap: 0.5rem;
+   840→}
+   841→
+   842→.footer-links-row {
+   843→  display: flex;
+   844→  align-items: center;
+   845→  gap: 1.25rem;
+   846→}
+   847→
+   848→.footer-links-row a {
+   849→  color: var(--accent-orange);
+   850→  text-decoration: none;
+   851→  font-weight: 500;
+   852→  transition: color 0.2s ease;
+   853→}
+   854→
+   855→.footer-links-row a:hover {
+   856→  color: #fed7aa;
+   857→  text-decoration: underline;
+   858→}
+   859→
+   860→/* --------------------------------------------------------------------------
+   861→ * RESPONSIVE RULES (320px - 1440px+)
+   862→ * -------------------------------------------------------------------------- */
+   863→@media (max-width: 1024px) {
+   864→  .stats-grid {
+   865→    grid-template-columns: repeat(2, 1fr);
+   866→  }
+   867→}
+   868→
+   869→@media (max-width: 640px) {
+   870→  .header-inner {
+   871→    flex-direction: column;
+   872→    align-items: stretch;
+   873→    padding: 0.75rem 1rem;
+   874→    gap: 0.6rem;
+   875→  }
+   876→
+   877→  .brand-wrap {
+   878→    justify-content: space-between;
+   879→  }
+   880→
+   881→  .header-actions {
+   882→    justify-content: space-between;
+   883→    width: 100%;
+   884→  }
+   885→
+   886→  .header-actions .btn {
+   887→    flex: 1 1 auto;
+   888→    padding: 0.45rem 0.6rem;
+   889→    font-size: 0.78rem;
+   890→  }
+   891→
+   892→  main {
+   893→    padding: 1rem 0.75rem;
+   894→    gap: 1rem;
+   895→  }
+   896→
+   897→  .stats-grid {
+   898→    grid-template-columns: 1fr 1fr;
+   899→    gap: 0.6rem;
+   900→  }
+   901→
+   902→  .stat-card {
+   903→    padding: 0.65rem 0.75rem;
+   904→    gap: 0.6rem;
+   905→  }
+   906→
+   907→  .stat-icon-wrap {
+   908→    width: 34px;
+   909→    height: 34px;
+   910→    font-size: 1.15rem;
+   911→  }
+   912→
+   913→  .stat-val {
+   914→    font-size: 1.15rem;
+   915→  }
+   916→
+   917→  .controls-bar {
+   918→    flex-direction: column;
+   919→    align-items: stretch;
+   920→    padding: 0.75rem;
+   921→  }
+   922→
+   923→  .search-box {
+   924→    max-width: 100%;
+   925→  }
+   926→
+   927→  .filter-group {
+   928→    width: 100%;
+   929→  }
+   930→
+   931→  .filter-select {
+   932→    flex: 1;
+   933→  }
+   934→
+   935→  .map-section {
+   936→    padding: 0.85rem;
+   937→  }
+   938→
+   939→  .map-legend {
+   940→    gap: 0.5rem;
+   941→  }
+   942→
+   943→  .legend-item, .border-legend-item {
+   944→    font-size: 0.7rem;
+   945→  }
+   946→
+   947→  .provinces-grid {
+   948→    grid-template-columns: 1fr;
+   949→  }
+   950→
+   951→  .status-options {
+   952→    grid-template-columns: 1fr 1fr;
+   953→  }
+   954→
+   955→  .modal-overlay {
+   956→    padding: 0;
+   957→    align-items: flex-end;
+   958→  }
+   959→
+   960→  .modal-container {
+   961→    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+   962→    max-height: 88vh;
+   963→  }
+   964→
+   965→  .footer-inner {
+   966→    flex-direction: column;
+   967→    text-align: center;
+   968→    gap: 0.6rem;
+   969→  }
+   970→
+   971→  .badges-grid,
+   972→  .suggestions-grid {
+   973→    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+   974→    gap: 0.75rem;
+   975→  }
+   976→
+   977→  .badge-card {
+   978→    padding: 1rem 0.75rem;
+   979→  }
+   980→
+   981→  .badge-icon {
+   982→    font-size: 2rem;
+   983→  }
+   984→
+   985→  .suggestion-card {
+   986→    padding: 1rem;
+   987→  }
+   988→
+   989→  .section-header h2 {
+   990→    font-size: 1.3rem;
+   991→  }
+   992→}
+   993→
+   994→/* ========== ACHIEVEMENTS & BADGES SECTION ========== */
+   995→.achievements-section,
+   996→.suggestions-section {
+   997→  max-width: 1440px;
+   998→  margin: 3rem auto;
+   999→  padding: 0 1.5rem;
+  1000→}
+  1001→
+  1002→.section-header {
+  1003→  margin-bottom: 2rem;
+  1004→}
+  1005→
+  1006→.section-header h2 {
+  1007→  font-size: 1.75rem;
+  1008→  font-weight: 700;
+  1009→  color: var(--text-primary);
+  1010→  margin-bottom: 0.5rem;
+  1011→  letter-spacing: -0.02em;
+  1012→}
+  1013→
+  1014→.section-header p {
+  1015→  font-size: 0.95rem;
+  1016→  color: var(--text-secondary);
+  1017→}
+  1018→
+  1019→.badges-grid {
+  1020→  display: grid;
+  1021→  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  1022→  gap: 1rem;
+  1023→}
+  1024→
+  1025→.badge-card {
+  1026→  background: var(--bg-card);
+  1027→  border: 1px solid var(--border-card);
+  1028→  border-radius: var(--radius-md);
+  1029→  padding: 1.5rem 1rem;
+  1030→  text-align: center;
+  1031→  transition: all 0.3s ease;
+  1032→  cursor: pointer;
+  1033→  position: relative;
+  1034→  overflow: hidden;
+  1035→}
+  1036→
+  1037→.badge-card:hover {
+  1038→  background: var(--bg-card-hover);
+  1039→  border-color: var(--accent-orange);
+  1040→  transform: translateY(-4px);
+  1041→  box-shadow: var(--shadow-card);
+  1042→}
+  1043→
+  1044→.badge-card.locked {
+  1045→  opacity: 0.5;
+  1046→  filter: grayscale(1);
+  1047→}
+  1048→
+  1049→.badge-card.locked:hover {
+  1050→  transform: none;
+  1051→  box-shadow: none;
+  1052→}
+  1053→
+  1054→.badge-icon {
+  1055→  font-size: 2.5rem;
+  1056→  margin-bottom: 0.75rem;
+  1057→}
+  1058→
+  1059→.badge-name {
+  1060→  font-size: 0.9rem;
+  1061→  font-weight: 700;
+  1062→  color: var(--text-primary);
+  1063→  margin-bottom: 0.5rem;
+  1064→}
+  1065→
+  1066→.badge-desc {
+  1067→  font-size: 0.8rem;
+  1068→  color: var(--text-muted);
+  1069→  margin-bottom: 0.75rem;
+  1070→}
+  1071→
+  1072→.badge-progress {
+  1073→  background: var(--border-card);
+  1074→  border-radius: 4px;
+  1075→  height: 4px;
+  1076→  overflow: hidden;
+  1077→  margin-top: 0.75rem;
+  1078→}
+  1079→
+  1080→.badge-progress-bar {
+  1081→  background: linear-gradient(90deg, var(--accent-orange), var(--accent-red));
+  1082→  height: 100%;
+  1083→  width: 0%;
+  1084→  transition: width 0.3s ease;
+  1085→}
+  1086→
+  1087→.badge-status {
+  1088→  font-size: 0.75rem;
+  1089→  color: var(--text-secondary);
+  1090→  margin-top: 0.5rem;
+  1091→}
+  1092→
+  1093→.badge-card.unlocked .badge-status {
+  1094→  color: var(--accent-emerald);
+  1095→  font-weight: 600;
+  1096→}
+  1097→
+  1098→/* ========== SUGGESTIONS SECTION ========== */
+  1099→.suggestions-grid {
+  1100→  display: grid;
+  1101→  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  1102→  gap: 1.5rem;
+  1103→}
+  1104→
+  1105→.suggestion-card {
+  1106→  background: linear-gradient(135deg, var(--bg-card) 0%, rgba(26, 34, 54, 0.8) 100%);
+  1107→  border: 1px solid var(--border-card);
+  1108→  border-radius: var(--radius-md);
+  1109→  padding: 1.5rem;
+  1110→  transition: all 0.3s ease;
+  1111→  cursor: pointer;
+  1112→}
+  1113→
+  1114→.suggestion-card:hover {
+  1115→  background: linear-gradient(135deg, var(--bg-card-hover) 0%, rgba(34, 45, 70, 0.9) 100%);
+  1116→  border-color: var(--accent-orange);
+  1117→  box-shadow: var(--shadow-card);
+  1118→  transform: translateY(-4px);
+  1119→}
+  1120→
+  1121→.suggestion-province-name {
+  1122→  font-size: 1.1rem;
+  1123→  font-weight: 700;
+  1124→  color: var(--accent-orange);
+  1125→  margin-bottom: 0.5rem;
+  1126→}
+  1127→
+  1128→.suggestion-plate {
+  1129→  display: inline-block;
+  1130→  background: var(--bg-card-hover);
+  1131→  border: 1px solid var(--border-card);
+  1132→  border-radius: 4px;
+  1133→  padding: 0.25rem 0.75rem;
+  1134→  font-size: 0.8rem;
+  1135→  font-weight: 700;
+  1136→  color: var(--text-secondary);
+  1137→  margin-bottom: 0.75rem;
+  1138→}
+  1139→
+  1140→.suggestion-region {
+  1141→  font-size: 0.85rem;
+  1142→  color: var(--text-secondary);
+  1143→  margin-bottom: 0.5rem;
+  1144→}
+  1145→
+  1146→.suggestion-reason {
+  1147→  font-size: 0.9rem;
+  1148→  color: var(--text-primary);
+  1149→  display: flex;
+  1150→  align-items: center;
+  1151→  gap: 0.5rem;
+  1152→}
+  1153→
+  1154→.suggestion-reason::before {
+  1155→  content: '→';
+  1156→  color: var(--accent-amber);
+  1157→  font-weight: bold;
+  1158→}
+  1159→
+  1160→.suggestion-empty {
+  1161→  grid-column: 1 / -1;
+  1162→  text-align: center;
+  1163→  padding: 2rem;
+  1164→  color: var(--text-secondary);
+  1165→  font-style: italic;
+  1166→}
+  1167→

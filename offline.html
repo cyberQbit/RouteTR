@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RouteTR — Offline Telemetry</title>
+  <style>
+    body {
+      background: #080808;
+      color: #f4f4f5;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      background: rgba(255, 77, 0, 0.12);
+      border: 1px solid #ff4d00;
+      color: #ff4d00;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin: 0 0 16px 0;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    p {
+      color: #a1a1aa;
+      max-width: 480px;
+      line-height: 1.6;
+      margin: 0 0 32px 0;
+    }
+    button {
+      background: #ff4d00;
+      color: #080808;
+      border: none;
+      padding: 14px 28px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+  <div class="badge">OFFLINE MODE ACTIVE</div>
+  <h1>STANDBY TELEMETRY</h1>
+  <p>You are currently disconnected from network signals. All previously logged provincial records and cached district data remain preserved in local storage.</p>
+  <button onclick="window.location.reload()">RETRY CONNECTION</button>
+</body>
+</html>

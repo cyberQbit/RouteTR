@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>Route TR — Türkiye Seyahat & Rota Günlüğü | İnteraktif Harita</title>
+  <meta name="description" content="Türkiye'nin 81 ilini, gerçek ilçe sınırlarını ve önemli gezi noktalarını adım adım işaretleyip keşif yüzdenizi hesaplayabileceğiniz interaktif seyahat günlüğü ve harita uygulaması. Rozetler, hedefler ve sosyal paylaşım." />
+  
+  <!-- SEO & Social Meta Tags -->
+  <meta name="keywords" content="Türkiye haritası, seyahat günlüğü, il keşfi, ilçe haritası, Türkiye gezileri, rota planlayıcı, seyahat takibi" />
+  <meta name="author" content="Aydın Aydemir (@cyberQbit)" />
+  <meta name="robots" content="index, follow" />
+  <meta name="language" content="Turkish" />
+  
+  <!-- Open Graph Tags -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cyberqbit.github.io/RouteTR/" />
+  <meta property="og:title" content="Route TR — Türkiye Keşif Haritası & Seyahat Günlüğü" />
+  <meta property="og:description" content="81 il, 973 ilçe ve binlerce POI ile kişisel Türkiye seyahat haritanı oluştur. Rozetler, hedefler ve sosyal paylaşım özelliği ile." />
+  <meta property="og:image" content="https://cyberqbit.github.io/RouteTR/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="tr_TR" />
+  
+  <!-- Twitter Card Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Route TR — Türkiye Keşif Haritası" />
+  <meta name="twitter:description" content="Türkiye'yi keşfet, rozetler kaz, başarılarını paylaş. İnteraktif seyahat haritası." />
+  <meta name="twitter:image" content="https://cyberqbit.github.io/RouteTR/twitter-image.png" />
+  <meta name="twitter:creator" content="@cyberQbit" />
+  
+  <!-- Additional SEO -->
+  <meta name="theme-color" content="#080808" />
+  <link rel="canonical" href="https://cyberqbit.github.io/RouteTR/" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>" />
+  
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <a href="./" class="brand-wrap">
+        <!-- Route 66 Style Shield Badge -->
+        <svg class="route-shield-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#1e293b" />
+              <stop offset="100%" stop-color="#0f172a" />
+            </linearGradient>
+          </defs>
+          <path d="M 50,5 C 80,5 92,20 92,42 C 92,72 50,95 50,95 C 50,95 8,72 8,42 C 8,20 20,5 50,5 Z" fill="url(#shieldGrad)" stroke="#f97316" stroke-width="4" stroke-linejoin="round" />
+          <path d="M 12,32 C 28,34 72,34 88,32" stroke="#f97316" stroke-width="2" fill="none" />
+          <text x="50" y="24" font-size="11" font-weight="900" fill="#f8fafc" text-anchor="middle" letter-spacing="2">TÜRKİYE</text>
+          <text x="50" y="65" font-size="34" font-weight="900" fill="#f97316" text-anchor="middle" font-family="'Impact', sans-serif">TR</text>
+          <circle cx="50" cy="78" r="2.5" fill="#f8fafc" />
+        </svg>
+
+        <div class="brand-text">
+          <h1>ROUTE TR</h1>
+          <p>Türkiye Granüler Seyahat & Keşif Haritası</p>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <button id="btn-generate-postcard" class="btn btn-primary" title="Sosyal Medya Kartı Oluştur">
+          <span>📸</span> Seyahat Kartı
+        </button>
+        <button id="btn-export-json" class="btn btn-secondary" title="Verileri JSON olarak yedekle">
+          <span>💾</span> Yedekle
+        </button>
+        <button id="btn-import-json" class="btn btn-secondary" title="JSON yedeğini yükle">
+          <span>📂</span> Yükle
+        </button>
+        <input type="file" id="json-file-input" accept=".json" style="display:none;" />
+        <button id="btn-reset-data" class="btn btn-danger" title="Tüm işaretlemeleri temizle">
+          <span>🗑️</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Dashboard Summary Bar -->
+  <section class="dashboard-bar">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon-wrap">🇹🇷</div>
+        <div class="stat-content">
+          <div class="stat-label">Türkiye Keşif Oranı</div>
+          <div id="stat-overall-score" class="stat-val">%0.0</div>
+          <div id="stat-traveler-title" class="stat-sub">Ev Kuşu 🪹</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrap">📍</div>
+        <div class="stat-content">
+          <div class="stat-label">Ziyaret Edilen İller</div>
+          <div id="stat-visited-provinces" class="stat-val">0 / 81</div>
+          <div class="stat-sub">İl bazlı kayıt</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrap">🏙️</div>
+        <div class="stat-content">
+          <div class="stat-label">Keşfedilen İlçeler</div>
+          <div id="stat-visited-districts" class="stat-val">0 İlçe</div>
+          <div class="stat-sub">Detaylı ilçe kaydı</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrap">⭐</div>
+        <div class="stat-content">
+          <div class="stat-label">Görülen Noktalar (POI)</div>
+          <div id="stat-visited-pois" class="stat-val">0 Nokta</div>
+          <div class="stat-sub">Tarihi / doğal lokasyonlar</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Achievements & Badges Section -->
+  <section class="achievements-section">
+    <div class="section-header">
+      <h2>🏅 Rozetlerin & Başarıların</h2>
+      <p>Keşif yolculuğundaki başarılarını göster</p>
+    </div>
+    
+    <div class="badges-grid" id="badges-grid">
+      <!-- Dynamically populated -->
+    </div>
+  </section>
+
+  <!-- Smart Suggestions Section -->
+  <section class="suggestions-section">
+    <div class="section-header">
+      <h2>🧭 Sonraki Hedef: Yakında Ne Var?</h2>
+      <p>Ziyaret ettiğin yerler yakınında ama henüz gitmediğin ilçeler</p>
+    </div>
+    
+    <div class="suggestions-grid" id="suggestions-grid">
+      <!-- Dynamically populated -->
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Filter & Search Toolbar -->
+    <div class="controls-bar">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-province" placeholder="Şehir, ilçe, nokta veya plaka ara (örn: Eskişehir, 26, Mihalıççık)..." autocomplete="off" />
+      </div>
+
+      <div class="filter-group">
+        <select id="filter-region" class="filter-select">
+          <option value="all">Tüm Bölgeler</option>
+          <option value="Marmara">Marmara</option>
+          <option value="Ege">Ege</option>
+          <option value="Akdeniz">Akdeniz</option>
+          <option value="İç Anadolu">İç Anadolu</option>
+          <option value="Karadeniz">Karadeniz</option>
+          <option value="Doğu Anadolu">Doğu Anadolu</option>
+          <option value="Güneydoğu Anadolu">Güneydoğu Anadolu</option>
+        </select>
+
+        <select id="filter-status" class="filter-select">
+          <option value="all">Tüm Durumlar</option>
+          <option value="visited">Gezdiklerim (🎒)</option>
+          <option value="transit">Transit / Mola (🚗)</option>
+          <option value="lived">Yaşadıklarım (🏡)</option>
+          <option value="unvisited">Gitmediklerim (⚪)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Interactive SVG Map Section -->
+    <section class="map-section">
+      <div class="map-header">
+        <h2>🗺️ İnteraktif Türkiye Haritası <small style="font-size:0.75rem; color:var(--text-muted); font-weight:normal;">(İle veya ilçeye tıklayarak detayları açın)</small></h2>
+      </div>
+
+      <div class="map-wrapper">
+        <svg id="turkey-svg-map" viewBox="0 0 1007 437" preserveAspectRatio="xMidYMid meet"></svg>
+        <div id="map-tooltip" class="map-tooltip"></div>
+      </div>
+
+      <!-- Legend -->
+      <div class="map-legend">
+        <div class="border-legend-item">
+          <span class="line-sample thick"></span>
+          <span>Ülke Sınırı</span>
+        </div>
+        <div class="border-legend-item">
+          <span class="line-sample province"></span>
+          <span>İl Sınırı</span>
+        </div>
+        <div class="border-legend-item">
+          <span class="line-sample thin"></span>
+          <span>İlçe Sınırı</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color unvisited"></div>
+          <span>Gitmedim (%0)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color transit"></div>
+          <span>Transit (%15)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color low"></div>
+          <span>Kısmen (%1-35)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color mid"></div>
+          <span>Gezdim (%36-70)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color high"></div>
+          <span>Kapsamlı (%71-99)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color complete"></div>
+          <span>Tamamlandı (%100)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color lived"></div>
+          <span>Yaşadım</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Explorer Grid (All 81 Provinces) -->
+    <section class="explorer-section">
+      <div class="explorer-header">
+        <h2>📋 Şehirler Listesi & Hızlı Düzenleme</h2>
+        <span style="font-size:0.75rem; color:var(--text-muted);">Kartlara tıklayarak seyahat notu ve ilçe ekleyin</span>
+      </div>
+
+      <div id="provinces-grid" class="provinces-grid">
+        <!-- Dynamically rendered via app.js -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Drill-Down Modal Drawer -->
+  <div id="province-modal" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span id="modal-plate" class="plate-badge" style="font-size:0.95rem; padding:0.25rem 0.55rem;">00</span>
+          <div>
+            <h2 id="modal-name">Şehir Adı</h2>
+            <div id="modal-region" style="font-size:0.75rem; color:var(--text-secondary);">Bölge</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.6rem;">
+          <div id="modal-score-badge" class="progress-pill" style="font-size:0.9rem; padding:0.25rem 0.65rem; background:rgba(249,115,22,0.22); color:#fed7aa;">%0</div>
+          <button id="btn-close-modal" class="close-btn">&times;</button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <!-- Status Selector -->
+        <div>
+          <div class="section-title">Ziyaret Durumu</div>
+          <div class="status-options">
+            <label class="status-label">
+              <input type="radio" name="visit-status" value="unvisited" />
+              <span>⚪ Gitmedim</span>
+            </label>
+            <label class="status-label">
+              <input type="radio" name="visit-status" value="transit" />
+              <span>🚗 Transit / Mola</span>
+            </label>
+            <label class="status-label">
+              <input type="radio" name="visit-status" value="visited" />
+              <span>🎒 Gezdim</span>
+            </label>
+            <label class="status-label">
+              <input type="radio" name="visit-status" value="lived" />
+              <span>🏡 Yaşadım</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Districts Checklist -->
+        <div>
+          <div class="section-title">
+            <span>Gezilen İlçeler</span>
+            <div class="district-actions">
+              <button id="btn-select-all-districts" class="btn btn-secondary btn-xs">Tümünü Seç</button>
+              <button id="btn-clear-districts" class="btn btn-secondary btn-xs">Temizle</button>
+            </div>
+          </div>
+          <div id="modal-districts-grid" class="districts-pill-grid"></div>
+        </div>
+
+        <!-- POI Checklist -->
+        <div>
+          <div class="section-title">
+            <span>Görülmeye Değer Popüler Noktalar (POI)</span>
+          </div>
+          <div id="modal-poi-list" class="poi-list"></div>
+          <div class="add-poi-form">
+            <input type="text" id="custom-poi-input" placeholder="+ Bu şehirde gezdiğiniz özel bir yer / köy ekleyin..." />
+            <button id="btn-add-poi" class="btn btn-secondary" style="padding:0.45rem 0.75rem;">Ekle</button>
+          </div>
+        </div>
+
+        <!-- Travel Notes -->
+        <div>
+          <div class="section-title">Kişisel Seyahat Notu</div>
+          <textarea id="modal-notes" class="notes-textarea" placeholder="Bu şehir hakkında anılarınız, seyahat tarihi veya notlarınız..."></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <span style="font-size:0.75rem; color:var(--text-muted);">Değişiklikler anlık kaydedilir</span>
+        <button id="btn-modal-save" class="btn btn-primary">Kaydet ve Kapat</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Postcard / Canvas Export Modal -->
+  <div id="postcard-modal" class="modal-overlay">
+    <div class="modal-container" style="max-width:820px;">
+      <div class="modal-header">
+        <h2>📸 Route TR Seyahat Kartınız</h2>
+        <button id="btn-close-postcard" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body" style="align-items:center;">
+        <canvas id="postcard-canvas"></canvas>
+      </div>
+      <div class="modal-footer">
+        <span style="font-size:0.75rem; color:var(--text-muted);">Sosyal medyada paylaşmak için kaydedin</span>
+        <button id="btn-download-postcard" class="btn btn-primary">
+          <span>⬇️</span> PNG İndir
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modern Minimalist Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand-sig">
+        <strong>Route TR</strong> &bull; <span>Türkiye Seyahat & Keşif Haritası</span>
+      </div>
+      <div class="footer-links-row">
+        <a href="https://github.com/cyberQbit" target="_blank" rel="noopener"><span>🐙</span> cyberQbit</a>
+        <a href="https://github.com/cyberQbit/RouteTR" target="_blank" rel="noopener"><span>📦</span> GitHub Repository</a>
+        <span style="color:var(--border-card);">&bull;</span>
+        <span style="color:var(--text-muted);">GNU GPL v3.0</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
