@@ -25,6 +25,9 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Aydın Aydemir (@cyberQbit)" }],
   manifest: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/manifest.webmanifest`,
+  verification: {
+    google: "NWmyOX6PtbwtGpuobiKq5DeTX08zqy2c5NdSvu-69sc",
+  },
   openGraph: {
     title: "Route TR — Türkiye Keşif Haritası & Seyahat Günlüğü",
     description: "81 il, 973 ilçe ve 600+ POI ile kişisel Türkiye seyahat haritanı oluştur. Rozetler, hedefler, hava durumu ve sosyal paylaşım özelliği ile.",
